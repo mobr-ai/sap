@@ -152,10 +152,12 @@ catalog*.xml
 Modelfile
 
 # Frontend build output (served by backend)
-src/cap/static/*
-!src/cap/static/.gitkeep
+src/app/static/*
+!src/app/static/.gitkeep
 
 # Runtime / local data (do not commit)
 data/
 
 src/ontologies/mini.ttl
+
+.venv/

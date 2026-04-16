@@ -12,8 +12,8 @@ from dataclasses import dataclass
 import random
 import re
 
-from cap.rdf.cache.query_normalizer import QueryNormalizer
-from cap.rdf.cache.pattern_registry import PatternRegistry
+from app.rdf.cache.query_normalizer import QueryNormalizer
+from app.rdf.cache.pattern_registry import PatternRegistry
 
 
 @dataclass(frozen=True)

@@ -9,8 +9,8 @@ import argparse
 import time
 from pathlib import Path
 
-from cap.services.redis_nl_client import RedisNLClient, cleanup_redis_nl_client
-from cap.rdf.cache.query_normalizer import QueryNormalizer
+from app.services.redis_nl_client import RedisNLClient, cleanup_redis_nl_client
+from app.rdf.cache.query_normalizer import QueryNormalizer
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.ERROR)

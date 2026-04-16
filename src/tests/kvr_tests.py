@@ -9,10 +9,10 @@ import argparse
 import time
 from pathlib import Path
 
-from cap.util.sparql_result_processor import convert_sparql_to_kv
-from cap.services.llm_client import get_llm_client, LLMClient
-from cap.services.redis_nl_client import get_redis_nl_client
-from cap.services.nl_service import nlq_to_sparql, execute_sparql
+from app.util.sparql_result_processor import convert_sparql_to_kv
+from app.services.llm_client import get_llm_client, LLMClient
+from app.services.redis_nl_client import get_redis_nl_client
+from app.services.nl_service import nlq_to_sparql, execute_sparql
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.ERROR)

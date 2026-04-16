@@ -12,8 +12,8 @@ import time
 from pathlib import Path
 
 
-from cap.services.nl_service import query_with_stream_response
-from cap.services.llm_client import LLMClient
+from app.services.nl_service import query_with_stream_response
+from app.services.llm_client import LLMClient
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.ERROR)

@@ -9,8 +9,8 @@ import argparse
 import time
 from pathlib import Path
 
-from cap.services.llm_client import LLMClient
-from cap.rdf.cache.query_normalizer import QueryNormalizer
+from app.services.llm_client import LLMClient
+from app.rdf.cache.query_normalizer import QueryNormalizer
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.ERROR)

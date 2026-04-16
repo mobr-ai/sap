@@ -233,7 +233,7 @@ Before running CAP, ensure you have the following installed:
 4. **Run CAP server:**
 
    ```bash
-   uvicorn src.cap.main:app --host 0.0.0.0 --port 8000
+   uvicorn src.app.main:app --host 0.0.0.0 --port 8000
    ```
 
 Now, you can access CAP's API at: [http://localhost:8000/docs](http://localhost:8000/docs)
@@ -258,7 +258,7 @@ pytest -v src/tests/test_api.py
 pytest -s src/tests/test_integration.py::test_full_graph_lifecycle
 
 # Run with coverage report
-pytest --cov=src/cap
+pytest --cov=src/app
 ```
 
 ### Running CAP with Docker Compose

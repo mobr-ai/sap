@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 
-from cap.util.sparql_util import force_limit_cap
-from cap.util.sparql_date_processor import SparqlDateProcessor
+from app.util.sparql_util import force_limit_cap
+from app.util.sparql_date_processor import SparqlDateProcessor
 
 # Test suite
 if __name__ == "__main__":
