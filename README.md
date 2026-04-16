@@ -1,343 +1,343 @@
-# CAP - Cardano Analytics Platform
+# SAP - Solana Analytics Platform
 
-## What is CAP?
-Leveraging LLMs and analytics mechanisms to provide natural language queries, CAP simplifies Cardano data analysis through real-time insights and intuitive, customizable dashboards.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/mobr-ai/sap-frontend/refs/heads/main/public/icons/logo.svg" width="180" />
+</p>
 
-## Running CAP
+<p align="center">
+  <b>Solana Analytics Platform Powered by Grounded AI</b><br/>
+  Semantic Knowledge Graph • Natural Language Analytics • Explainable Insights • Interactive Dashboards
+</p>
 
-## Setting Up Your Environment
+**SAP** is the backend and analytics engine for the **Solana Analytics Platform**,
+focused on grounded natural-language exploration of Solana data, semantic querying,
+explainable insight generation, and artifact-oriented analytics workflows.
 
-### Prerequisites
+This repository provides the backend services, APIs, data access layer,
+orchestration logic, and supporting infrastructure for SAP.
 
-Before running CAP, ensure you have the following installed:
+## Related Repository
+
+- **SAP Frontend:** https://github.com/mobr-ai/sap-frontend
+
+The frontend repository contains the React/Vite SPA that connects to this backend.
+
+---
+
+## What SAP Provides
+
+SAP backend is responsible for:
+
+- serving the API consumed by SAP Frontend
+- orchestrating natural-language analytics workflows
+- grounding results in structured and semantic data sources
+- managing artifact generation and reusable analytics outputs
+- supporting authenticated product flows
+- exposing health, monitoring, and debugging surfaces
+
+---
+
+## Platform Direction
+
+SAP is focused on a **Solana-first analytics architecture** centered on:
+
+- natural-language investigation
+- semantic knowledge graph exploration
+- explainable analytics results
+- artifact-driven dashboards
+- grounded AI workflows for complex Solana data
+
+The platform is being developed incrementally while keeping the system buildable
+and operable throughout the migration and productization process.
+
+---
+
+## Prerequisites
+
+Before running SAP, ensure you have the following installed:
 
 - **Python 3.11+**
 - **Docker & Docker Compose**
-- **Virtualenv** (for local setup)
+- **Virtualenv** or **venv**
 - **Git**
 
-### Setting Up macOS
+---
 
-1. **Install Homebrew (if not installed):**
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
-2. **Install dependencies:**
-   ```bash
-   brew install python@3.11 docker docker-compose
-   ```
-3. **Start Docker (if not already running):**
-   ```bash
-   open -a Docker
-   ```
+## Environment Setup
 
-### Setting Up Linux (Ubuntu)
+### macOS
 
-1. **Update system and install dependencies:**
-   ```bash
-   sudo apt update && sudo apt upgrade -y
-   sudo apt install python3.11 python3.11-venv python3-pip docker.io docker-compose -y
-   ```
-2. **Start Docker service:**
-   ```bash
-   sudo systemctl start docker
-   sudo systemctl enable docker
-   ```
+1. Install Homebrew if needed:
 
-### Setting Up Windows (WSL2) - NOT OFFICIALLY SUPPORTED, TESTED NOR RECOMMENDED.
-
-> **DISCLAIMER:** While CAP may work on WSL2, it is **not officially supported**. Some features, especially those relying on networking and Docker, may require additional configuration or may not work as expected. Use at your own discretion.
-
-1. **Enable WSL2 and Install Ubuntu:**
-   - Follow Microsoft’s guide: [https://learn.microsoft.com/en-us/windows/wsl/install](https://learn.microsoft.com/en-us/windows/wsl/install)
-2. **Install dependencies in WSL:**
-   ```bash
-   sudo apt update && sudo apt upgrade -y
-   sudo apt install python3.11 python3.11-venv python3-pip docker.io docker-compose -y
-   ```
-3. **Start Docker within WSL:**
-   ```bash
-   sudo systemctl start docker
-   ```
-
-## Runing CAP
-
-### Running locally
-
-
-
-#### CAP Setup
-
-1. **Config and environment files:**
-
-   Run script to fetch necessary cardano-node and cardano-db-sync config files
-
-   **ATTENTION**: If you wish to run on mainnet, just replace "preview" with "mainnet" in the fetch script and the names in the step by step.
-
-   ```bash
-   ./fetch_config_files.sh
-   ```
-
-   Create env file by copying provided example
-   ```bash
-   cp .env.example .env
-   ```
-
-   In the .env file, set `VIRTUOSO_HOST=localhost` and define your password (use the same password in the commands ahead).
-
-2. **Run supporting services:**
-
-   **ATTENTION**: remove --platform linux/amd64 if you are *NOT* using an amd64 platform (e.g. Mac with M1, M2, M3, M4 chips)
-
-   Jaeger for CAP tracing support:
-   ```bash
-   docker run --platform linux/amd64 -d --name jaeger \
-     -p 4317:4317 \
-     -p 4318:4318 \
-     -p 16686:16686 \
-     jaegertracing/all-in-one:latest
-   ```
-
-   ```bash
-   #OR check if it is running if you had it before
-   docker ps --filter "name=jaeger"
-   ```
-
-   Virtuoso for CAP triplestore:
-   ```bash
-   docker run --platform linux/amd64 -d --name virtuoso \
-     -p 8890:8890 -p 1111:1111 \
-     -e DBA_PASSWORD=mysecretpassword \
-     -e SPARQL_UPDATE=true \
-     tenforce/virtuoso
-   ```
-
-   ```bash
-   #OR check if it is running if you had it before
-   docker ps --filter "name=virtuoso"
-   ```
-
-   PostgreSQL:
-   ```bash
-   docker run --platform linux/amd64 -d --name postgres \
-      -v postgres-data:/var/lib/postgresql/data \
-      -e POSTGRES_DB=cap \
-      -e POSTGRES_USER=postgres \
-      -e POSTGRES_PASSWORD=mysecretpassword \
-      -p 5432:5432 \
-      postgres:17.5-alpine
-   ```
-
-   ```bash
-   #OR check if it is running if you had it before
-   docker ps --filter "name=postgres"
-   ```
-
-   Verify PostgreSQL is running:
-   ```bash
-   docker ps
-   ```
-
-   Clone the cardano-db-sync Repository:
-   ```bash
-   #remember to cd to your preferred source code folder
-   git clone https://github.com/IntersectMBO/cardano-db-sync.git
-   cd cardano-db-sync
-   ```
-
-   Create a pgpass File:
-   ```bash
-   echo "localhost:5432:cap:postgres:mysecretpassword" > ~/.pgpass
-   chmod 600 ~/.pgpass
-   ```
-
-   In the cardano-db-sync folder, run the DB Setup Script:
-   ```bash
-   docker run --rm \
-      --platform linux/amd64 \
-      --network host \
-      -v $(pwd)/scripts:/scripts \
-      -v ~/.pgpass:/root/.pgpass \
-      -e PGPASSFILE=/root/.pgpass \
-      --entrypoint /bin/bash \
-      ghcr.io/intersectmbo/cardano-db-sync:13.6.0.2 \
-      -c "/scripts/postgresql-setup.sh --createdb"
-   ```
-
-   Cardano Node:
-   ```bash
-   docker run --platform linux/amd64 -d --name cardano-node-preview \
-      -v $HOME/cardano/preview-config:/config \
-      -v $(pwd)/backend/assets:/assets \
-      -v $HOME/cardano/db:/data \
-      -p 3001:3001 \
-      ghcr.io/intersectmbo/cardano-node:10.4.0 \
-      run \
-      --config /config/config.json \
-      --topology /config/topology.json \
-      --database-path /data \
-      --socket-path /data/node.socket \
-      --host-addr 0.0.0.0 \
-      --port 3001
-   ```
-
-   ```bash
-   #OR check if it is running if you had it before
-   docker ps --filter "name=cardano-node-preview"
-   ```
-
-   cardano-db-sync:
-   ```bash
-   docker run --platform linux/amd64 -d --name cardano-db-sync-preview \
-      --network host \
-      -v $HOME/cardano/preview-config:/config \
-      -v $HOME/cardano/db-sync-data:/var/lib/cexplorer \
-      -v $HOME/cardano/db:/node-ipc \
-      -e NETWORK=preview \
-      -e POSTGRES_HOST=localhost \
-      -e POSTGRES_PORT=5432 \
-      -e POSTGRES_DB=cap \
-      -e POSTGRES_USER=postgres \
-      -e POSTGRES_PASSWORD=mysecretpassword \
-      -e DB_SYNC_CONFIG=/config/db-sync-config.json \
-      ghcr.io/intersectmbo/cardano-db-sync:13.6.0.2
-   ```
-
-   ```bash
-   #OR check if it is running if you had it before
-   docker ps --filter "name=cardano-db-sync-preview"
-   ```
-
-   Wait a few seconds and verify if database is syncing:
-   ```bash
-   docker exec -it postgres psql -U postgres -d cap -c "SELECT * FROM block LIMIT 10;"
-   ```
-
-   ollama:
-   ```bash
-   curl -fsSL https://ollama.com/install.sh | sh
-   ```
-
-3. **Set up Python environment:**
-
-   ```bash
-   virtualenv venv
-   source venv/bin/activate
-
-   #poetry install
-   #strongly recommended NVIDIA GeForce RTX 5080 at least to run the model locally
-   ollama ollama pull mobr/cap
-
-   ```
-
-4. **Run CAP server:**
-
-   ```bash
-   uvicorn src.app.main:app --host 0.0.0.0 --port 8000
-   ```
-
-Now, you can access CAP's API at: [http://localhost:8000/docs](http://localhost:8000/docs)
-You can also access CAP's chat UI via `http://localhost:8000/llm`.
-
-#### Testing
-With CAP and its dependencies running (i.e., cardano-node, cardano-db-sync, postgresql, virtuos, jaeger, and cap with uvicorn), you can now run its tests
 ```bash
-# activate virtual environment
-source venv/bin/activate
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# install dev dependencies
-poetry install --with dev
 
-# Run all tests
-pytest -v
+2. Install dependencies:
 
-# Run specific test file
-pytest -v src/tests/test_api.py
-
-# Run specifit test function
-pytest -s src/tests/test_integration.py::test_full_graph_lifecycle
-
-# Run with coverage report
-pytest --cov=src/app
+```bash
+brew install python@3.11 docker docker-compose
 ```
 
-### Running CAP with Docker Compose
+3. Start Docker:
 
-1. **Copy the environment file:**
+```bash
+open -a Docker
+```
 
-   ```bash
-   cp .env.example .env
-   ```
+### Linux (Ubuntu)
 
-   Set `VIRTUOSO_HOST=virtuoso` in the `.env` file.
+1. Update system and install dependencies:
 
-   **Note:** If you're not using an ARM64 system (e.g., Mac M1/M2/M3), remove `platform: linux/amd64` lines from `docker-compose.yml`.
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3.11 python3.11-venv python3-pip docker.io docker-compose -y
+```
 
-2. **Build and start services:**
+2. Start Docker:
 
-   ```bash
-   docker compose up -d
-   ```
+```bash
+sudo systemctl start docker
+sudo systemctl enable docker
+```
 
-   Wait a couple of minutes until the services are up. Check them on:
-   - **Jaeger UI** → [http://localhost:16686](http://localhost:16686)
-   - **Virtuoso** → [http://localhost:8890](http://localhost:8890)
-   - **CAP API** → [http://localhost:8000/docs](http://localhost:8000/docs)
+### Windows (WSL2)
 
-3. **View logs:**
+> **Disclaimer:** WSL2 is not the primary target environment. It may work, but
+> Docker, networking, GPU, and volume behavior may require additional tuning.
 
-   ```bash
-   # View all service logs
-   docker compose logs -f
+1. Enable WSL2 and install Ubuntu
+2. Install dependencies inside WSL:
 
-   # View specific service logs
-   docker compose logs -f api
-   ```
+```bash
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3.11 python3.11-venv python3-pip docker.io docker-compose -y
+```
 
-4. **Stop services:**
+3. Start Docker inside WSL if needed:
 
-   ```bash
-   docker compose down
-   ```
+```bash
+sudo systemctl start docker
+```
 
-5. **Stop services and remove volumes:**
+---
 
-   ```bash
-   docker compose down -v
-   ```
+## Environment Variables
 
-6. **Pull mobr/cap LLM model inside Docker:**
+Create a local environment file from the example:
 
-   ```bash
-   #strongly recommended NVIDIA GeForce RTX 5080 at least to run the model locally
-   docker exec ollama ollama pull mobr/cap
-   ```
+```bash
+cp .env.example .env
+```
 
-Now, you can access CAP's API at: [http://localhost:8000/docs](http://localhost:8000/docs)
-You can also access CAP's chat UI via `http://localhost:8000/llm`.
+Adjust values to match your local machine and desired runtime.
+
+Typical variables may include:
+
+```env
+POSTGRES_DB=sap
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=mysecretpassword
+REDIS_URL=redis://redis:6379/0
+QLEVER_PASSWORD=mysecretpassword
+CUDA_VISIBLE_DEVICES=0
+```
+
+If you are running through Docker Compose, keep hostnames aligned with service
+names such as `postgres`, `redis`, `qlever`, and other containers defined in
+your compose file.
+
+---
+
+## Running SAP Locally
+
+### 1. Set up Python environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -U pip
+poetry install
+```
+
+### 2. Start supporting services
+
+You can either run dependencies manually or use Docker Compose.
+
+### 3. Run the SAP API
+
+Adjust the module path below if your backend package name differs.
+
+```bash
+uvicorn src.sap.main:app --host 0.0.0.0 --port 8000
+```
+
+Once running, the API should be available at:
+
+* **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
+* **ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+---
+
+## Running SAP with Docker Compose
+
+### 1. Prepare the environment file
+
+```bash
+cp .env.example .env
+```
+
+### 2. Review compose-specific settings
+
+Make sure your `docker-compose.yml` is aligned with SAP-specific names, paths,
+database values, and application module paths.
+
+Recommended adjustments include:
+
+* `container_name: sap_server`
+* `container_name: sap_postgres`
+* `container_name: sap_redis`
+* host paths such as `/home/sap/data/...`
+* database bootstrap file such as `./ops/sql/init-sap.sql`
+* `POSTGRES_DB=sap`
+* application command:
+
+  ```bash
+  uvicorn src.sap.main:app --host 0.0.0.0 --port 8000
+  ```
+
+### 3. Build and start services
+
+```bash
+docker compose up -d
+```
+
+### 4. Inspect logs
+
+```bash
+docker compose logs -f
+```
+
+For a specific service:
+
+```bash
+docker compose logs -f api
+docker compose logs -f postgres
+docker compose logs -f qlever
+```
+
+### 5. Stop services
+
+```bash
+docker compose down
+```
+
+### 6. Stop services and remove volumes
+
+```bash
+docker compose down -v
+```
+
+---
+
+## Suggested Compose Service Layout
+
+A typical local SAP stack may include services such as:
+
+* `api`
+* `postgres`
+* `redis`
+* `qlever`
+* `jaeger`
+* `vllm`
+
+Adjust service definitions, ports, and volumes according to your local
+infrastructure and deployment strategy.
+
+---
 
 ## Development
 
 ### API Documentation
 
-Once running, access API documentation at:
+Once SAP is running, access:
 
-- **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
-- **ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
-
-### Cardano Ontology Documentation
-
-- **GitHub:** [https://github.com/mobr-ai/cap/documentation/ontology](https://github.com/mobr-ai/cap/documentation/ontology)
-- **Live Website:** [https://mobr.ai/cardano](https://mobr.ai/cardano)
+* **Swagger UI:** [http://localhost:8000/docs](http://localhost:8000/docs)
+* **ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
 ### Monitoring and Tracing
 
-Distributed tracing is enabled with Jaeger. You can monitor traces and debug performance at:
+If Jaeger is enabled in Docker Compose, tracing can be inspected at:
 
-- **Jaeger UI:** [http://localhost:16686](http://localhost:16686)
+* **Jaeger UI:** [http://localhost:16688](http://localhost:16688)
 
-### Using virtuoso conductor to make queries
+### Query / Semantic Engine
 
-Queries is alse enabled with Virtuos Conductor. You can access the conductor at:
+If QLever is enabled in Docker Compose, its interfaces are typically exposed at:
 
-- **Virtuoso UI:** [http://localhost:8890](http://localhost:8890)
+* **QLever UI:** [http://localhost:7001](http://localhost:7001)
+* **SPARQL Endpoint:** [http://localhost:7000](http://localhost:7000)
+
+Adjust ports if your local compose file differs.
+
+---
+
+## Testing
+
+With SAP and its dependencies running:
+
+```bash
+source venv/bin/activate
+poetry install --with dev
+pytest -v
+```
+
+Run a specific file:
+
+```bash
+pytest -v src/tests/test_api.py
+```
+
+Run a specific test:
+
+```bash
+pytest -s src/tests/test_integration.py::test_full_graph_lifecycle
+```
+
+Run with coverage:
+
+```bash
+pytest --cov=src/sap
+```
+
+Adjust the coverage path if your package layout differs.
+
+---
+
+## Contributing
+
+Contributions are welcome, especially around:
+
+* Solana-oriented analytics workflows
+* semantic querying and grounded reasoning
+* backend reliability and observability
+* auth and user-facing integration support
+* artifact generation and dashboard APIs
+
+When contributing:
+
+1. Create a feature branch
+2. Keep changes scoped and buildable
+3. Run tests before opening a PR
+4. Document meaningful backend or infra changes
+
+---
+
+## License
+
+Licensed under the GNU GPLv3.
+
+You may use, modify, and distribute the software under the same license.
+
+```
+```
