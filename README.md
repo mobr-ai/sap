@@ -339,5 +339,3 @@ Licensed under the GNU GPLv3.
 
 You may use, modify, and distribute the software under the same license.
 
-```
-```
