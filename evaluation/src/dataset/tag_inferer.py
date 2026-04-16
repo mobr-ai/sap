@@ -17,8 +17,8 @@ trivial normalization hits.
 import re
 from dataclasses import dataclass
 
-from cap.rdf.cache.pattern_registry import PatternRegistry
-from cap.rdf.cache.query_normalizer import QueryNormalizer
+from app.rdf.cache.pattern_registry import PatternRegistry
+from app.rdf.cache.query_normalizer import QueryNormalizer
 
 
 @dataclass(frozen=True)

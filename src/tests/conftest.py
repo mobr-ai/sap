@@ -3,8 +3,8 @@ import pytest
 from httpx import AsyncClient
 from typing import AsyncGenerator
 import logging
-from cap.config import settings
-from cap.rdf.triplestore import TriplestoreClient
+from app.config import settings
+from app.rdf.triplestore import TriplestoreClient
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)

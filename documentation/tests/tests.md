@@ -53,7 +53,7 @@ pytest -v src/tests/test_api.py
 pytest -s src/tests/test_etl.py::test_etl_service_status
 
 # Run with coverage report
-pytest --cov=src/cap
+pytest --cov=src/app
 ```
 
 ### SPARQL Tests

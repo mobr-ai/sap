@@ -114,7 +114,7 @@ python_functions = ["test_*"]
 addopts = [
     "--strict-markers",
     "--strict-config",
-    "--cov=src/cap",
+    "--cov=src/app",
     "--cov-report=term-missing",
     "--cov-report=html",
     "--cov-report=xml",
@@ -126,7 +126,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src/cap"]
+source = ["src/app"]
 omit = [
     "*/tests/*",
     "*/test_*",

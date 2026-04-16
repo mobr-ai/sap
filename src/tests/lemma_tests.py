@@ -9,7 +9,7 @@ import argparse
 import time
 from pathlib import Path
 
-from cap.util.nlp_util import lemmatize_text
+from app.util.nlp_util import lemmatize_text
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level=logging.ERROR)

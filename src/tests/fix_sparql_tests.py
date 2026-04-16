@@ -9,8 +9,8 @@ import httpx
 from pathlib import Path
 from pprint import pprint
 
-from cap.util.sparql_util import _validate_and_fix_sparql
-from cap.rdf.cache.sparql_normalizer import SPARQLNormalizer
+from app.util.sparql_util import _validate_and_fix_sparql
+from app.rdf.cache.sparql_normalizer import SPARQLNormalizer
 
 def _read_content_sparql_file(path: str | Path) -> str:
     """Read and return the content of a SPARQL file."""

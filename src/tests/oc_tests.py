@@ -6,8 +6,8 @@ import json
 import sys
 import asyncio
 
-from cap.services.llm_client import LLMClient
-from cap.util.sparql_util import _clean_sparql
+from app.services.llm_client import LLMClient
+from app.util.sparql_util import _clean_sparql
 
 async def test_health_check():
     """Test 1: Health Check - Verify llm service is running."""

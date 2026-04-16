@@ -17,7 +17,7 @@ from pathlib import Path
 import json
 import random
 
-from cap.rdf.cache.query_normalizer import QueryNormalizer
+from app.rdf.cache.query_normalizer import QueryNormalizer
 
 from evaluation.src.dataset.query_mapping_parser import parse_msgs_file
 from evaluation.src.dataset.variant_generators import generate_variants

@@ -8,9 +8,9 @@ import argparse
 import json
 from pathlib import Path
 
-from cap.util.sparql_util import detect_and_parse_sparql, force_limit_cap
-from cap.rdf.triplestore import TriplestoreClient
-from cap.services.llm_client import LLMClient
+from app.util.sparql_util import detect_and_parse_sparql, force_limit_cap
+from app.rdf.triplestore import TriplestoreClient
+from app.services.llm_client import LLMClient
 
 def _read_content_nl_file(path: str | Path) -> str:
     """Read and return the content of a txt file with nl queries."""

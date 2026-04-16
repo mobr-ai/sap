@@ -4,7 +4,7 @@ import logging
 
 from httpx import AsyncClient
 from urllib.parse import quote_plus
-from cap.rdf.triplestore import TriplestoreClient
+from app.rdf.triplestore import TriplestoreClient
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

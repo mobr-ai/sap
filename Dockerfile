@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir poetry==1.8.3
 # ------------------------------------------------------------
 # 1) cap_deps: installs all python deps (main + rag)
 # ------------------------------------------------------------
-FROM base AS cap_deps
+FROM base AS app_deps
 
 # Copy manifests first for caching
 COPY pyproject.toml poetry.lock ./
@@ -38,7 +38,7 @@ RUN --mount=type=cache,target=/root/.cache/pypoetry \
 # ------------------------------------------------------------
 # 2) cap_server: reuses deps layer, only copies code
 # ------------------------------------------------------------
-FROM cap_deps AS cap_server
+FROM app_deps AS app_server
 
 COPY src/ src/
 COPY datasets/ datasets/
@@ -46,4 +46,4 @@ COPY datasets/ datasets/
 EXPOSE 8000
 
 # Where the command actually comes from (if compose doesn't override it)
-CMD ["uvicorn", "src.cap.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
