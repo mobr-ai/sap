@@ -29,8 +29,8 @@ class Settings(BaseSettings):
     LOG_LEVEL: str
 
     # CAP settings
-    CAP_HOST: str
-    CAP_PORT: int
+    APP_HOST: str
+    APP_PORT: int
 
     model_config = SettingsConfigDict(
         env_file=".env",

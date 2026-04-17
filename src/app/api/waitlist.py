@@ -23,7 +23,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL")  # i.e. "https://cap.mobr.ai"
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL")  # i.e. "https://sap.mobr.ai"
 
 
 class WaitIn(BaseModel):
