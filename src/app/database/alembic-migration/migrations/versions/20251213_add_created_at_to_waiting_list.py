@@ -1,6 +1,6 @@
 """add created_at to waiting_list
 
-Revision ID: 20251213_add_created_at_to_waiting_list
+Revision ID: 20251213_waiting_list_created
 Revises: 20251205_admin_settings
 Create Date: 2025-12-13
 """
@@ -8,7 +8,7 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy import inspect
 
-revision = "20251213_add_created_at_to_waiting_list"
+revision = "20251213_waiting_list_created"
 down_revision = "20251205_admin_settings"
 branch_labels = None
 depends_on = None

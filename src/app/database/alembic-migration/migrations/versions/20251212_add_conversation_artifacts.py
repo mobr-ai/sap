@@ -1,6 +1,6 @@
 """add conversation artifacts
 
-Revision ID: 20251212_add_conversation_artifacts
+Revision ID: 20251212_add_conv_artifacts
 Revises: 20251211_add_user_conversations
 Create Date: 2025-12-12
 """
@@ -9,7 +9,7 @@ from alembic import op
 import sqlalchemy as sa
 
 
-revision = "20251212_add_conversation_artifacts"
+revision = "20251212_add_conv_artifacts"
 down_revision = "20251211_add_user_conversations"
 branch_labels = None
 depends_on = None
