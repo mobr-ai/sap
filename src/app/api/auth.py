@@ -29,6 +29,7 @@ from app.database.session import get_db
 from app.mailing.event_triggers import on_user_access_granted
 from app.services.admin_alerts_service import maybe_notify_admins_new_user
 
+# --- Event triggers (mailer) ---
 try:
     from app.mailing.event_triggers import (
         on_confirmation_resent,
@@ -65,17 +66,20 @@ PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL")
 
 
 def _stable_base_url(request: Request) -> str:
+    """Prefer PUBLIC_BASE_URL to avoid localhost/0.0.0.0 links; fallback to request base_url."""
     if PUBLIC_BASE_URL:
         return PUBLIC_BASE_URL.rstrip("/")
     return str(request.base_url).rstrip("/")
 
 
 def _make_referral_link(base_url: str, user_id: int | None) -> str:
+    """Build /signup?ref=u<user_id> or plain /signup if absent."""
     if user_id:
         return f"{base_url}/signup?ref=u{user_id}"
     return f"{base_url}/signup"
 
 
+# ---- Pydantic shapes ----
 class SolanaChallengeIn(BaseModel):
     public_key: str
     language: str | None = "en"
@@ -144,6 +148,10 @@ class SetPasswordIn(BaseModel):
 def _ensure_waitlist_row(
     db: Session, email: str, ref: str = "", language: str = "en"
 ) -> bool:
+    """
+    Insert into waiting_list if not exists.
+    Returns True if inserted, False if already existed / skipped.
+    """
     e = (email or "").strip().lower()
     if not e:
         return False
@@ -163,6 +171,7 @@ def _ensure_waitlist_row(
     return True
 
 
+# ---- Auth: Claim e-mail (for wallet) ----
 @router.post("/auth/wallet_claim_email")
 def wallet_claim_email(
     data: WalletClaimEmailIn,
@@ -198,6 +207,7 @@ def wallet_claim_email(
         try:
             base_url = _stable_base_url(request)
             referral_link = _make_referral_link(base_url, getattr(user, "user_id", None))
+
             on_waiting_list_joined(
                 to=[email_norm],
                 language=(data.language or "en"),
@@ -212,6 +222,7 @@ def wallet_claim_email(
     return {"status": "waitlisted", "id": user.user_id, "email": user.email}
 
 
+# ---- Auth: Register (unconfirmed) ----
 @router.post("/register")
 def register(data: RegisterIn, request: Request, db: Session = Depends(get_db)):
     if not data.email or not data.password:
@@ -254,6 +265,7 @@ def register(data: RegisterIn, request: Request, db: Session = Depends(get_db)):
     return {"redirect": "/login?confirmed=false"}
 
 
+# ---- Confirm email ----
 @router.get("/confirm/{token}")
 def confirm_email(token: str, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.confirmation_token == token).first()
@@ -268,6 +280,7 @@ def confirm_email(token: str, db: Session = Depends(get_db)):
     return RedirectResponse(url="/login?confirmed=true")
 
 
+# ---- Re-send setup link in case it expires ----
 @router.post("/auth/resend_setup_link")
 def resend_setup_link(
     data: ResendSetupLinkIn,
@@ -309,6 +322,7 @@ def resend_setup_link(
     return {"status": "sent"}
 
 
+# ---- Define user password for approved accounts ----
 @router.post("/auth/set_password")
 def set_password(data: SetPasswordIn, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.confirmation_token == data.token).first()
@@ -344,6 +358,7 @@ def set_password(data: SetPasswordIn, db: Session = Depends(get_db)):
     }
 
 
+# ---- Resend confirmation ----
 @router.post("/resend_confirmation")
 def resend_confirmation(data: ResendIn, request: Request, db: Session = Depends(get_db)):
     email_norm = (str(data.email or "").strip().lower()) if data.email else ""
@@ -362,6 +377,7 @@ def resend_confirmation(data: ResendIn, request: Request, db: Session = Depends(
     return {"message": "resent"}
 
 
+# ---- Login (email/password) ----
 @router.post("/login")
 def login(data: LoginIn, db: Session = Depends(get_db)):
     email_norm = (str(data.email or "").strip().lower()) if data.email else ""
@@ -403,6 +419,7 @@ def login(data: LoginIn, db: Session = Depends(get_db)):
     return resp
 
 
+# ---- Google OAuth (access_token from client) ----
 @router.post("/auth/google")
 def auth_google(data: GoogleIn, request: Request, db: Session = Depends(get_db)):
     try:
@@ -509,6 +526,7 @@ def auth_google(data: GoogleIn, request: Request, db: Session = Depends(get_db))
         raise HTTPException(400, detail=str(e))
 
 
+# ---- Solana wallet auth ----
 @router.post("/auth/solana/challenge")
 def solana_challenge(
     data: SolanaChallengeIn,
@@ -528,6 +546,16 @@ def solana_challenge(
     db.commit()
     db.refresh(user)
 
+    print(
+        "[SOLANA CHALLENGE] created",
+        {
+            "user_id": user.user_id,
+            "public_key": public_key,
+            "expires_at": expires_at.isoformat(),
+            "message_len": len(message),
+        },
+    )
+
     return {
         "public_key": public_key,
         "message": message,
@@ -544,13 +572,26 @@ def solana_verify(
 
     user = db.query(User).filter(User.wallet_address == public_key).first()
     if not user:
+        print("[SOLANA VERIFY] user not found", {"public_key": public_key})
         raise HTTPException(404, detail="userNotFound")
 
     wallet_chain = getattr(user, "wallet_auth_chain", None)
     if wallet_chain not in (None, "", "solana"):
+        print(
+            "[SOLANA VERIFY] wallet chain mismatch",
+            {"public_key": public_key, "wallet_auth_chain": wallet_chain},
+        )
         raise HTTPException(400, detail="walletChainMismatch")
 
     if not user.wallet_challenge_hash or not user.wallet_challenge_expires_at:
+        print(
+            "[SOLANA VERIFY] missing challenge",
+            {
+                "public_key": public_key,
+                "has_hash": bool(user.wallet_challenge_hash),
+                "expires_at": str(user.wallet_challenge_expires_at),
+            },
+        )
         raise HTTPException(400, detail="missingWalletChallenge")
 
     now = datetime.now(timezone.utc)
@@ -559,6 +600,14 @@ def solana_verify(
         expires_at = expires_at.replace(tzinfo=timezone.utc)
 
     if expires_at < now:
+        print(
+            "[SOLANA VERIFY] challenge expired",
+            {
+                "public_key": public_key,
+                "expires_at": expires_at.isoformat(),
+                "now": now.isoformat(),
+            },
+        )
         user.wallet_challenge_hash = None
         user.wallet_challenge_expires_at = None
         db.commit()
@@ -566,11 +615,44 @@ def solana_verify(
 
     incoming_message = data.message or ""
     incoming_hash = challenge_hash(incoming_message)
+
+    print(
+        "[SOLANA VERIFY] comparing challenge hash",
+        {
+            "public_key": public_key,
+            "incoming_hash": incoming_hash,
+            "stored_hash": user.wallet_challenge_hash,
+            "message_len": len(incoming_message),
+        },
+    )
+
     if incoming_hash != user.wallet_challenge_hash:
+        print("[SOLANA VERIFY] challenge mismatch", {"public_key": public_key})
         raise HTTPException(400, detail="walletChallengeMismatch")
 
-    sig_bytes = signature_bytes(data.signature, data.signature_encoding)
+    try:
+        sig_bytes = signature_bytes(data.signature, data.signature_encoding)
+    except HTTPException as exc:
+        print(
+            "[SOLANA VERIFY] signature decode failed",
+            {"public_key": public_key, "detail": exc.detail},
+        )
+        raise
+
+    print(
+        "[SOLANA VERIFY] decoded signature",
+        {
+            "public_key": public_key,
+            "signature_len": len(sig_bytes),
+            "encoding": data.signature_encoding or "base64",
+        },
+    )
+
     if len(sig_bytes) != 64:
+        print(
+            "[SOLANA VERIFY] invalid signature length",
+            {"public_key": public_key, "signature_len": len(sig_bytes)},
+        )
         raise HTTPException(400, detail="invalidWalletSignature")
 
     verify_solana_signature(
@@ -586,6 +668,15 @@ def solana_verify(
     user.wallet_auth_chain = "solana"
     db.commit()
     db.refresh(user)
+
+    print(
+        "[SOLANA VERIFY] signature verified successfully",
+        {
+            "user_id": user.user_id,
+            "public_key": public_key,
+            "is_confirmed": bool(user.is_confirmed),
+        },
+    )
 
     if not bool(user.is_confirmed):
         return {
@@ -603,8 +694,15 @@ def solana_verify(
                 language=(data.language or "en"),
                 wallet_address=public_key,
             )
-        except Exception:
-            pass
+        except Exception as mail_err:
+            print(
+                "[SOLANA VERIFY] wallet login mail trigger failed",
+                {
+                    "user_id": user.user_id,
+                    "email": user.email,
+                    "error": repr(mail_err),
+                },
+            )
 
     return {
         "id": user.user_id,
