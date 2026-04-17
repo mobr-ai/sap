@@ -24,7 +24,13 @@ class User(Base):
     email          = Column(String, unique=True, index=True, nullable=True)
     password_hash  = Column(String, nullable=True)
     google_id      = Column(String, unique=True, nullable=True)
+
     wallet_address = Column(String(128), index=True, nullable=True)
+    wallet_auth_chain = Column(String(32), nullable=True)
+    wallet_challenge_hash = Column(String(128), nullable=True)
+    wallet_challenge_expires_at = Column(DateTime(timezone=True), nullable=True)
+    wallet_last_signed_at = Column(DateTime(timezone=True), nullable=True)
+
     username       = Column(String(30), unique=True, index=True, nullable=True)
     display_name   = Column(String(30), nullable=True)
 
