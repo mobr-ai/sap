@@ -8,7 +8,7 @@ endblock %} {% block content %}
 
 <p style="margin: 0 0 12px 0">
   {{ translations.lead or "A new user account has just been created on" }} {{
-  translations.app_name or "CAP" }}.
+  translations.app_name or "SAP" }}.
 </p>
 
 <table
@@ -41,7 +41,7 @@ endblock %} {% block content %}
       {# Simple mapping for nicer labels #} {% if source == "password" %} {{
       translations.source_password or "Email & password" }} {% elif source ==
       "google" %} {{ translations.source_google or "Google OAuth" }} {% elif
-      source == "cardano" %} {{ translations.source_cardano or "Cardano wallet"
+      source == "cardano" %} {{ translations.source_cardano or "Solana wallet"
       }} {% else %} {{ source }} {% endif %}
     </td>
   </tr>
@@ -62,20 +62,20 @@ endblock %} {% block content %}
       display: inline-block;
       padding: 10px 18px;
       border-radius: 999px;
-      background-color: #2563eb;
-      color: #ffffff;
+      background: linear-gradient(90deg, #9945ff 0%, #14f195 100%);
+      color: #08111f;
       font-size: 14px;
       font-weight: 600;
       text-decoration: none;
       line-height: 1.2;
     "
   >
-    {{ translations.manage_link_label or "Open CAP" }}
+    {{ translations.manage_link_label or "Open SAP" }}
   </a>
 </p>
 {% endif %}
 
-<p style="color: #6b7280; font-size: 12px; margin: 0">
+<p style="color: #7d8ea8; font-size: 12px; margin: 0">
   {{ translations.footer or "You’re receiving this message because admin
   notifications for new user registrations are enabled." }}
 </p>

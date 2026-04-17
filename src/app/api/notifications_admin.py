@@ -1,4 +1,3 @@
-# cap/src/app/api/notifications_admin.py
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,15 +8,12 @@ from app.database.model import User
 from app.database.session import get_db
 from app.core.auth_dependencies import get_current_admin_user
 from app.services.admin_alerts_service import (
-    # existing
     get_new_user_notification_config,
     update_new_user_notification_config,
     maybe_notify_admins_new_user,
-    # existing (waitlist)
     get_waitlist_notification_config,
     update_waitlist_notification_config,
     maybe_notify_admins_waitlist,
-    # NEW (user confirmed)
     get_user_confirmed_notification_config,
     update_user_confirmed_notification_config,
     maybe_notify_admins_user_confirmed,
@@ -25,8 +21,6 @@ from app.services.admin_alerts_service import (
 
 router = APIRouter(prefix="/api/v1/admin/notifications", tags=["notifications_admin"])
 
-
-# ---------- Schemas ----------
 
 class NotificationConfigIn(BaseModel):
     enabled: bool
@@ -38,7 +32,9 @@ class NotificationConfigOut(BaseModel):
     recipients: List[EmailStr]
 
 
-# ---------- New user notifications (existing) ----------
+class NotificationTestIn(BaseModel):
+    language: str = "en"
+
 
 @router.get("/new_user", response_model=NotificationConfigOut)
 def get_new_user_notifications(
@@ -65,6 +61,7 @@ def set_new_user_notifications(
 
 @router.post("/new_user/test")
 def send_test_new_user_notification(
+    payload: NotificationTestIn,
     db: Session = Depends(get_db),
     admin: User = Depends(get_current_admin_user),
 ):
@@ -75,6 +72,7 @@ def send_test_new_user_notification(
         maybe_notify_admins_new_user(
             db=db,
             user=admin,
+            language=payload.language,
             source="admin-test",
         )
     except Exception as exc:  # pragma: no cover
@@ -85,8 +83,6 @@ def send_test_new_user_notification(
 
     return {"ok": True}
 
-
-# ---------- Waitlist notifications (existing) ----------
 
 @router.get("/waitlist", response_model=NotificationConfigOut)
 def get_waitlist_notifications(
@@ -113,6 +109,7 @@ def set_waitlist_notifications(
 
 @router.post("/waitlist/test")
 def send_test_waitlist_notification(
+    payload: NotificationTestIn,
     db: Session = Depends(get_db),
     admin: User = Depends(get_current_admin_user),
 ):
@@ -126,7 +123,7 @@ def send_test_waitlist_notification(
             db=db,
             email=admin.email,
             ref="admin-test",
-            language="en",
+            language=payload.language,
             source="admin-test",
         )
     except Exception as exc:  # pragma: no cover
@@ -137,8 +134,6 @@ def send_test_waitlist_notification(
 
     return {"ok": True}
 
-
-# ---------- User confirmed notifications (NEW) ----------
 
 @router.get("/user_confirmed", response_model=NotificationConfigOut)
 def get_user_confirmed_notifications(
@@ -165,6 +160,7 @@ def set_user_confirmed_notifications(
 
 @router.post("/user_confirmed/test")
 def send_test_user_confirmed_notification(
+    payload: NotificationTestIn,
     db: Session = Depends(get_db),
     admin: User = Depends(get_current_admin_user),
 ):
@@ -177,6 +173,7 @@ def send_test_user_confirmed_notification(
         maybe_notify_admins_user_confirmed(
             db=db,
             user=admin,
+            language=payload.language,
             source="admin-test",
         )
     except Exception as exc:  # pragma: no cover
