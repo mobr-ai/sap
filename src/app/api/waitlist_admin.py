@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import secrets
+import os
 from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
@@ -26,7 +27,7 @@ from app.services.admin_alerts_service import (
 
 router = APIRouter(prefix="/api/v1/admin/wait_list", tags=["waitlist_admin"])
 
-APP_URL = "https://cap.mobr.ai"
+APP_URL = os.getenv("PUBLIC_BASE_URL")
 
 
 # -----------------------------
@@ -260,6 +261,7 @@ def list_waitlist(
         ).mappings().all()
         has_created_at = True
     except Exception:
+        db.rollback()
         rows = db.execute(
             text(
                 f"""

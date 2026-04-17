@@ -2,6 +2,7 @@
 import logging
 import secrets
 import re
+import os
 from datetime import datetime, timezone
 from typing import Optional
 
@@ -32,7 +33,8 @@ from app.services.admin_alerts_service import (
 
 router = APIRouter(prefix="/api/v1/admin/users", tags=["user_admin"])
 
-APP_URL = "https://cap.mobr.ai"
+APP_URL = os.getenv("PUBLIC_BASE_URL")
+
 
 
 # ---------- Helpers ----------
