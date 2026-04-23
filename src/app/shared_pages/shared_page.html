@@ -1,13 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="{{ lang }}">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>{{ title }} – CAP</title>
+    <title>{{ title }} | SAP</title>
 
     <meta property="og:type" content="article" />
-    <meta property="og:site_name" content="CAP" />
+    <meta property="og:site_name" content="SAP" />
     <meta property="og:title" content="{{ title }}" />
     <meta property="og:description" content="{{ description }}" />
     <meta property="og:image" content="{{ image_url }}" />
@@ -30,8 +30,8 @@
   <body>
     <main class="share-page">
       <header class="share-header">
-        <div class="brand">CAP</div>
-        <div class="subtitle">{{ t_shared_from_cap }}</div>
+        <div class="brand">SAP</div>
+        <div class="subtitle">{{ t_shared_from_sap }}</div>
       </header>
 
       <section class="share-card">
@@ -61,8 +61,8 @@
 
         <div class="actions">
           <a class="btn btn-primary" href="{{ target_url }}">
-            <i class="fa-solid fa-rocket"></i>
-            <span>{{ t_open_in_cap }}</span>
+            <i class="fa-solid fa-chart-line"></i>
+            <span>{{ t_open_in_sap }}</span>
           </a>
 
           <a
@@ -154,7 +154,7 @@
           window.clearTimeout(showToast._t);
           showToast._t = window.setTimeout(
             () => toast.classList.remove("show"),
-            1800
+            1800,
           );
         }
 
@@ -188,8 +188,9 @@
         });
 
         document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && modalBackdrop.classList.contains("open"))
+          if (e.key === "Escape" && modalBackdrop.classList.contains("open")) {
             closeModal();
+          }
         });
 
         copyBtn.addEventListener("click", async () => {
