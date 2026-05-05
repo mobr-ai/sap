@@ -14,13 +14,59 @@ focused on grounded natural-language exploration of Solana data, semantic queryi
 explainable insight generation, and artifact-oriented analytics workflows.
 
 This repository provides the backend services, APIs, data access layer,
-orchestration logic, and supporting infrastructure for SAP.
+orchestration logic, semantic query integration, authentication support, and
+supporting infrastructure for SAP.
 
-## Related Repository
+---
+
+## Related Repositories
 
 - **SAP Frontend:** https://github.com/mobr-ai/sap-frontend
+- **SAP ETL:** https://github.com/mobr-ai/sap-etl
 
 The frontend repository contains the React/Vite SPA that connects to this backend.
+
+The ETL repository contains the C++20 ingestion and transformation pipeline used
+to replay Solana data, map ledger-derived records into the Solana ontology, and
+generate semantic outputs that can be loaded into SAP's knowledge graph
+infrastructure.
+
+---
+
+## Repository Structure Across SAP
+
+SAP is organized across three main repositories:
+
+- **sap:** backend services, APIs, orchestration, authentication, analytics
+  workflows, semantic query integration, and infrastructure configuration.
+- **sap-frontend:** React/Vite single-page application for the user-facing
+  analytics interface, dashboards, onboarding, wallet flows, and product
+  experience.
+- **sap-etl:** C++20 ETL pipeline responsible for replaying Solana data,
+  transforming ledger-derived records into ontology-aligned semantic data, and
+  preparing outputs for knowledge graph ingestion.
+
+Together, these repositories form the core SAP stack:
+
+```text
+Solana data sources
+        │
+        ▼
+sap-etl
+        │
+        ▼
+Ontology-aligned semantic outputs
+        │
+        ▼
+sap backend + QLever / knowledge graph services
+        │
+        ▼
+sap-frontend
+````
+
+This separation keeps ingestion, backend orchestration, and user-facing product
+development modular while supporting the broader SAP goal of grounded AI
+analytics over Solana data.
 
 ---
 
@@ -28,12 +74,14 @@ The frontend repository contains the React/Vite SPA that connects to this backen
 
 SAP backend is responsible for:
 
-- serving the API consumed by SAP Frontend
-- orchestrating natural-language analytics workflows
-- grounding results in structured and semantic data sources
-- managing artifact generation and reusable analytics outputs
-- supporting authenticated product flows
-- exposing health, monitoring, and debugging surfaces
+* serving the API consumed by SAP Frontend
+* orchestrating natural-language analytics workflows
+* grounding results in structured and semantic data sources
+* consuming semantic outputs produced by the SAP ETL pipeline
+* connecting application flows to knowledge graph infrastructure
+* managing artifact generation and reusable analytics outputs
+* supporting authenticated product flows
+* exposing health, monitoring, and debugging surfaces
 
 ---
 
@@ -41,14 +89,17 @@ SAP backend is responsible for:
 
 SAP is focused on a **Solana-first analytics architecture** centered on:
 
-- natural-language investigation
-- semantic knowledge graph exploration
-- explainable analytics results
-- artifact-driven dashboards
-- grounded AI workflows for complex Solana data
+* natural-language investigation
+* semantic knowledge graph exploration
+* explainable analytics results
+* artifact-driven dashboards
+* grounded AI workflows for complex Solana data
+* deterministic ETL pipelines that transform Solana ledger activity into
+  ontology-aligned semantic data
 
 The platform is being developed incrementally while keeping the system buildable
-and operable throughout the migration and productization process.
+and operable throughout the migration, ETL integration, and productization
+process.
 
 ---
 
@@ -56,10 +107,10 @@ and operable throughout the migration and productization process.
 
 Before running SAP, ensure you have the following installed:
 
-- **Python 3.11+**
-- **Docker & Docker Compose**
-- **Virtualenv** or **venv**
-- **Git**
+* **Python 3.11+**
+* **Docker & Docker Compose**
+* **Virtualenv** or **venv**
+* **Git**
 
 ---
 
@@ -71,7 +122,7 @@ Before running SAP, ensure you have the following installed:
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
+```
 
 2. Install dependencies:
 
@@ -106,7 +157,8 @@ sudo systemctl enable docker
 > **Disclaimer:** WSL2 is not the primary target environment. It may work, but
 > Docker, networking, GPU, and volume behavior may require additional tuning.
 
-1. Enable WSL2 and install Ubuntu
+1. Enable WSL2 and install Ubuntu.
+
 2. Install dependencies inside WSL:
 
 ```bash
@@ -323,13 +375,14 @@ Contributions are welcome, especially around:
 * backend reliability and observability
 * auth and user-facing integration support
 * artifact generation and dashboard APIs
+* ETL integration and ontology-aligned Solana data modeling
 
 When contributing:
 
 1. Create a feature branch
 2. Keep changes scoped and buildable
 3. Run tests before opening a PR
-4. Document meaningful backend or infra changes
+4. Document meaningful backend, ETL, semantic, or infra changes
 
 ---
 
@@ -338,4 +391,3 @@ When contributing:
 Licensed under the GNU GPLv3.
 
 You may use, modify, and distribute the software under the same license.
-
