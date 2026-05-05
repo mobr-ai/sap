@@ -1,4 +1,4 @@
-# cap/src/app/api/share.py
+# sap/src/app/api/share.py
 """
 Share image endpoints.
 
@@ -13,8 +13,6 @@ import hashlib, os, secrets, tempfile, json, re
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Tuple
-from urllib.parse import quote
-from string import Template
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, Response
@@ -25,7 +23,6 @@ from app.database.model import SharedImage, User
 from app.core.auth_dependencies import get_current_user_unconfirmed
 
 router = APIRouter(prefix="/api/v1/share", tags=["share"])
-
 
 _I18N_PATH = Path(__file__).resolve().parent / "share_i18n.json"
 
@@ -55,9 +52,9 @@ ALLOWED_MIMES = set(
 )
 
 # Where files are stored inside the container (bind-mounted on server)
-SHARE_IMAGE_DIR = Path(os.getenv("SHARE_IMAGE_DIR", "/var/lib/cap/share-images")).resolve()
+SHARE_IMAGE_DIR = Path(os.getenv("SHARE_IMAGE_DIR", "/var/lib/sap/share-images")).resolve()
 
-# Public base URL for absolute OG tags (env already uses this)
+# Public base URL for absolute OG tags
 PUBLIC_BASE_URL = (os.getenv("PUBLIC_BASE_URL") or "").strip().rstrip("/")
 
 
@@ -78,14 +75,13 @@ def resolve_lang(request: Request) -> str:
         code = part.split(";")[0].strip().lower()
         if code in SHARE_I18N:
             return code
-        # handle "pt-BR" -> "pt-br"
         if "-" in code:
-            base = code.lower()
-            if base in SHARE_I18N:
-                return base
+            if code in SHARE_I18N:
+                return code
 
     # 3) fallback
     return "en"
+
 
 def _ensure_storage_dir() -> None:
     try:
@@ -112,8 +108,8 @@ def _read_stream_to_tempfile_and_hash(
     h = hashlib.sha256()
     total = 0
 
-    # IMPORTANT: Create temp file in the same filesystem as final destination
-    tmp_fd, tmp_path = tempfile.mkstemp(prefix="cap-share-", suffix=".bin", dir=str(tmp_dir))
+    # Create temp file in the same filesystem as final destination
+    tmp_fd, tmp_path = tempfile.mkstemp(prefix="sap-share-", suffix=".bin", dir=str(tmp_dir))
     os.close(tmp_fd)
 
     try:
@@ -144,8 +140,8 @@ def _build_image_path(image_id: str, token: str, etag: str) -> str:
 
 
 def _build_page_path(image_id: str, token: str, etag: str) -> str:
-    # v=etag is helpful so platforms refetch if the same id is ever reused (it shouldn't be, but safe)
     return f"/api/v1/share/page/{image_id}?t={token}&v={etag}"
+
 
 def _abs_url_from_base(base: str, path: str) -> str:
     base = (base or "").rstrip("/")
@@ -153,11 +149,8 @@ def _abs_url_from_base(base: str, path: str) -> str:
         path = "/" + path
     return f"{base}{path}" if base else path
 
+
 def _abs_url(path: str) -> str:
-    """
-    Convert a same-origin path into an absolute URL for OG tags.
-    If PUBLIC_BASE_URL isn't set, fallback to the path (still works for some contexts).
-    """
     if not path.startswith("/"):
         path = "/" + path
     if not PUBLIC_BASE_URL:
@@ -166,7 +159,6 @@ def _abs_url(path: str) -> str:
 
 
 def _escape_attr(s: str) -> str:
-    # minimal HTML attribute escaping
     return (
         (s or "")
         .replace("&", "&amp;")
@@ -177,6 +169,8 @@ def _escape_attr(s: str) -> str:
 
 
 _PLACEHOLDER_RE = re.compile(r"\{\{\s*([a-zA-Z0-9_]+)\s*\}\}")
+
+
 def render_shared_page(ctx: dict, template_html: str) -> str:
     def repl(m: re.Match) -> str:
         key = m.group(1)
@@ -304,7 +298,7 @@ def upload_share_image(
 def get_share_image(
     image_id: str,
     request: Request,
-    t: str,  # token query param (required)
+    t: str,
     db: Session = Depends(get_db),
 ):
     """
@@ -359,24 +353,18 @@ def get_shared_page(
     request: Request,
     t: str,
     db: Session = Depends(get_db),
-    # Optional display params (frontend may pass; safe defaults otherwise)
     title: Optional[str] = Query(default=None),
     description: Optional[str] = Query(default=None),
     target_url: Optional[str] = Query(default=None),
     preview: bool = Query(default=False),
-
 ):
     """
     Public share page (HTML) that emits OG/Twitter meta tags.
     Social platforms fetch this HTML, read og:image, then fetch the image URL.
-
-    - Uses the same token 't' and expiry checks as the image endpoint.
-    - OG tags should use absolute URLs (PUBLIC_BASE_URL).
     """
     now = _utcnow()
     lang = resolve_lang(request)
     i18n = SHARE_I18N.get(lang, SHARE_I18N.get("en", {}))
-
 
     obj = db.query(SharedImage).filter(SharedImage.id == image_id).first()
     if not obj:
@@ -388,12 +376,9 @@ def get_shared_page(
     if obj.expires_at <= now:
         raise HTTPException(status_code=404, detail="Expired")
 
-    # Build URLs
     image_path = _build_image_path(obj.id, obj.access_token, obj.etag)
     page_path = _build_page_path(obj.id, obj.access_token, obj.etag)
 
-    # For crawlers: PUBLIC_BASE_URL
-    # For local manual testing: preview=1 uses the request host (localhost, etc.)
     base = PUBLIC_BASE_URL
     if preview or not PUBLIC_BASE_URL:
         base = str(request.base_url).rstrip("/")
@@ -401,39 +386,34 @@ def get_shared_page(
     og_image = _abs_url_from_base(base, image_path)
     og_url = _abs_url_from_base(base, page_path)
 
-    # If SPA route (dashboard widget view) is known, you can pass it as target_url
-    # and we’ll set og:site_name / og:url to the share page, while providing a normal link to the app.
-    page_title = (title or i18n.get("default_title", "CAP")).strip()[:120]
+    page_title = (title or i18n.get("default_title", "SAP analysis")).strip()[:120]
     page_desc = (description or i18n.get(
         "default_description",
-        "Explore data-driven insights on CAP",
+        "Explore Solana data-driven insights on SAP.",
     )).strip()[:300]
 
     target = (target_url or PUBLIC_BASE_URL or "/").strip()
 
-    # Escape
     page_title_e = _escape_attr(page_title)
     page_desc_e = _escape_attr(page_desc)
     og_image_e = _escape_attr(og_image)
     og_url_e = _escape_attr(og_url)
     target_e = _escape_attr(target)
 
-
     tpl_path = Path(__file__).resolve().parent.parent / "shared_pages" / "shared_page.html"
     html = tpl_path.read_text(encoding="utf-8")
 
     ctx = {
+        "lang": lang,
         "title": page_title_e,
         "description": page_desc_e,
         "image_url": og_image_e,
         "target_url": target_e,
         "page_url": og_url_e,
-        "css_url": f"/share-static/shared_page.css",
-        "default_title": i18n.get("default_title"),
-        "default_description": i18n.get("default_description"),
-        "t_shared_from_cap": i18n.get("shared_from_cap"),
+        "css_url": "/share-static/shared_page.css",
+        "t_shared_from_sap": i18n.get("shared_from_sap"),
         "t_chart_image_alt": i18n.get("chart_image_alt"),
-        "t_open_in_cap": i18n.get("open_in_cap"),
+        "t_open_in_sap": i18n.get("open_in_sap"),
         "t_download_image": i18n.get("download_image"),
         "t_download": i18n.get("download"),
         "t_copy_link": i18n.get("copy_link"),
@@ -445,10 +425,8 @@ def get_shared_page(
     }
     html = render_shared_page(ctx, html)
 
-    # Cache HTML a bit, but not too long; crawlers will refetch anyway.
     headers = {
         "Cache-Control": "public, max-age=300",
-        "X-Share-Lang": lang
-
+        "X-Share-Lang": lang,
     }
     return HTMLResponse(content=html, headers=headers)

@@ -5,7 +5,7 @@
 </h2>
 
 <p style="margin: 0 0 12px 0">
-  {{ translations.lead or "A sign-in was made using your Cardano wallet:" }}
+  {{ translations.lead or "A sign-in was made using your Solana wallet:" }}
 </p>
 
 {% if wallet_address %}
@@ -31,8 +31,8 @@
       display: inline-block;
       padding: 10px 16px;
       text-decoration: none;
-      background: #2563eb;
-      color: #fff;
+      background: linear-gradient(90deg, #9945ff 0%, #14f195 100%);
+      color: #08111f;
       border-radius: 6px;
     "
   >
@@ -40,7 +40,7 @@
   </a>
 </p>
 
-<p style="color: #6b7280; font-size: 12px; margin: 0">
+<p style="color: #7d8ea8; font-size: 12px; margin: 0">
   {{ translations.footer or "Security notice from the Cardano Analytics Platform
   (CAP)." }}
 </p>

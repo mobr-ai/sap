@@ -1,4 +1,4 @@
-{# src/cap/mailing/templates/base_email.html #}
+{# src/app/mailing/templates/base_email.html #}
 <!doctype html>
 <html lang="{{ language|default('en') }}">
   <head>
@@ -11,14 +11,13 @@
     />
     <meta name="color-scheme" content="light dark" />
     <meta name="supported-color-schemes" content="light dark" />
-    <title>{{ app_name|default("CAP") }}</title>
+    <title>{{ app_name|default("SAP") }}</title>
 
     <style>
       :root {
         color-scheme: light dark;
       }
 
-      /* Badge colors (light mode baseline) */
       .type-badge {
         display: inline-block;
         padding: 4px 10px;
@@ -33,83 +32,67 @@
           sans-serif;
         letter-spacing: 0.04em;
         text-transform: uppercase;
-        border: 1px solid rgba(0, 0, 0, 0.12);
-        color: #111827;
-        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #e9e8ff;
+        background: rgba(255, 255, 255, 0.08);
       }
+
       .type-auth {
-        background: rgba(37, 99, 235, 0.12);
-        border-color: rgba(37, 99, 235, 0.28);
-        color: #6e768b;
+        background: rgba(0, 194, 255, 0.14);
+        border-color: rgba(0, 194, 255, 0.28);
+        color: #8fe7ff;
       }
+
       .type-security {
-        background: rgba(245, 158, 11, 0.12);
-        border-color: rgba(245, 158, 11, 0.28);
-        color: #8d5252;
+        background: rgba(20, 241, 149, 0.12);
+        border-color: rgba(20, 241, 149, 0.24);
+        color: #a6f7d2;
       }
+
       .type-admin {
-        background: rgba(139, 92, 246, 0.12);
-        border-color: rgba(139, 92, 246, 0.28);
-        color: #7e67a0;
+        background: rgba(153, 69, 255, 0.14);
+        border-color: rgba(153, 69, 255, 0.28);
+        color: #d9b6ff;
       }
+
       .type-neutral {
-        background: rgba(17, 24, 39, 0.06);
-        border-color: rgba(17, 24, 39, 0.12);
-        color: #c6cad1;
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.14);
+        color: #d6d8e6;
       }
 
       @media (prefers-color-scheme: dark) {
         .bg-body {
-          background-color: #0b1220 !important;
+          background-color: #050816 !important;
         }
         .bg-card {
-          background-color: #121a2b !important;
+          background-color: #0b1020 !important;
         }
         .text-primary {
-          color: #e5e7eb !important;
+          color: #e8edf7 !important;
         }
         .text-secondary {
-          color: #9ca3af !important;
+          color: #9aa7bd !important;
         }
         .link {
-          color: #60a5fa !important;
+          color: #7cead0 !important;
         }
         .btn {
-          background-color: #2563eb !important;
-          color: #ffffff !important;
+          background: linear-gradient(
+            90deg,
+            #9945ff 0%,
+            #14f195 100%
+          ) !important;
+          color: #08111d !important;
         }
         .divider {
-          border-color: #233152 !important;
-        }
-
-        /* Badge colors (dark mode) */
-        .type-badge {
-          color: #ffffff !important;
-          border-color: rgba(255, 255, 255, 0.18) !important;
-          background: rgba(255, 255, 255, 0.1) !important;
-        }
-        .type-auth {
-          background: rgba(96, 165, 250, 0.18) !important;
-          border-color: rgba(96, 165, 250, 0.35) !important;
-        }
-        .type-security {
-          background: rgba(251, 191, 36, 0.16) !important;
-          border-color: rgba(251, 191, 36, 0.35) !important;
-        }
-        .type-admin {
-          background: rgba(167, 139, 250, 0.16) !important;
-          border-color: rgba(167, 139, 250, 0.35) !important;
-        }
-        .type-neutral {
-          background: rgba(255, 255, 255, 0.14) !important;
-          border-color: rgba(255, 255, 255, 0.22) !important;
+          border-color: #20283d !important;
         }
       }
     </style>
   </head>
 
   <body class="bg-body" style="margin: 0; padding: 0; background: #f3f4f6">
-    <!-- Preheader (hidden) -->
     <div
       style="
         display: none;
@@ -136,7 +119,7 @@
       cellpadding="0"
       cellspacing="0"
       border="0"
-      style="background: #f3f4f6"
+      style="background: #050816"
     >
       <tr>
         <td align="center" style="padding: 24px">
@@ -148,21 +131,27 @@
             border="0"
             style="
               max-width: 600px;
-              background: #ffffff;
-              border-radius: 10px;
+              background: #0b1020;
+              border-radius: 12px;
               overflow: hidden;
+              border: 1px solid #1c2438;
             "
             class="bg-card"
           >
-            <!-- Header -->
             <tr>
-              <td align="center" style="background: #111827; padding: 20px">
+              <td
+                align="center"
+                style="
+                  background: #0b1020;
+                  padding: 18px 20px 20px;
+                  border-top: 3px solid #14f195;
+                "
+              >
                 {% if app_logo_url %}
                 <img
                   src="{{ app_logo_url }}"
                   width="120"
-                  height="auto"
-                  alt="{{ app_name|default('CAP') }} logo"
+                  alt="{{ app_name|default('SAP') }} logo"
                   style="
                     display: block;
                     max-width: 120px;
@@ -176,7 +165,27 @@
                 <div
                   style="
                     font:
-                      600 20px/1.3 -apple-system,
+                      600 13px/1.3 -apple-system,
+                      BlinkMacSystemFont,
+                      Segoe UI,
+                      Roboto,
+                      Helvetica,
+                      Arial,
+                      sans-serif;
+                    color: #8cefd7;
+                    margin-top: 12px;
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                  "
+                >
+                  {{ translations.header_kicker or "Solana Analytics Platform"
+                  }}
+                </div>
+
+                <div
+                  style="
+                    font:
+                      700 20px/1.3 -apple-system,
                       BlinkMacSystemFont,
                       Segoe UI,
                       Roboto,
@@ -184,23 +193,22 @@
                       Arial,
                       sans-serif;
                     color: #ffffff;
-                    margin-top: 10px;
+                    margin-top: 8px;
                   "
                 >
-                  {% block header_title %}{{ app_name|default("CAP") }}{%
+                  {% block header_title %}{{ app_name|default("SAP") }}{%
                   endblock %}
                 </div>
 
                 {% if template_type %} {% set _tt = (template_type|string)|lower
-                %} {% if _tt == "auth" %} {% set _badge_class = "type-auth" %}
-                {% elif _tt == "security" %} {% set _badge_class =
-                "type-security" %} {% elif _tt == "admin" %} {% set _badge_class
-                = "type-admin" %} {% else %} {% set _badge_class =
-                "type-neutral" %} {% endif %}
+                %} {% if _tt == "auth" %}{% set _badge_class = "type-auth" %} {%
+                elif _tt == "security" %}{% set _badge_class = "type-security"
+                %} {% elif _tt == "admin" %}{% set _badge_class = "type-admin"
+                %} {% else %}{% set _badge_class = "type-neutral" %} {% endif %}
 
                 <div
                   class="type-badge {{ _badge_class }}"
-                  style="margin-top: 6px"
+                  style="margin-top: 10px"
                 >
                   {{ _tt }}
                 </div>
@@ -208,9 +216,8 @@
               </td>
             </tr>
 
-            <!-- Body -->
             <tr>
-              <td style="padding: 24px; background: #f9fafb" class="bg-card">
+              <td style="padding: 24px; background: #0b1020" class="bg-card">
                 <div
                   class="text-primary"
                   style="
@@ -222,7 +229,7 @@
                       Helvetica,
                       Arial,
                       sans-serif;
-                    color: #111827;
+                    color: #e8edf7;
                   "
                 >
                   {% block content %}{% endblock %}
@@ -230,17 +237,15 @@
               </td>
             </tr>
 
-            <!-- Divider -->
             <tr>
               <td style="padding: 0 24px">
                 <hr
                   class="divider"
-                  style="border: 0; border-top: 1px solid #e5e7eb; margin: 0"
+                  style="border: 0; border-top: 1px solid #20283d; margin: 0"
                 />
               </td>
             </tr>
 
-            <!-- Footer -->
             <tr>
               <td
                 align="center"
@@ -255,12 +260,12 @@
                     Helvetica,
                     Arial,
                     sans-serif;
-                  color: #6b7280;
+                  color: #9aa7bd;
                 "
               >
                 <div>
                   {{ translations.footer_note or "You received this email
-                  because it relates to your CAP account or activity." }}
+                  because it relates to your SAP account or activity." }}
                 </div>
 
                 {% if unsubscribe_url %}
@@ -268,7 +273,7 @@
                   <a
                     class="link"
                     href="{{ unsubscribe_url }}"
-                    style="color: #2563eb; text-decoration: none"
+                    style="color: #7cead0; text-decoration: none"
                   >
                     {{ translations.unsubscribe or "Unsubscribe" }}
                   </a>
@@ -278,7 +283,7 @@
                   <a
                     class="link"
                     href="{{ public_base_url }}"
-                    style="color: #2563eb; text-decoration: none"
+                    style="color: #7cead0; text-decoration: none"
                   >
                     {{ public_base_url }}
                   </a>
