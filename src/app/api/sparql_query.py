@@ -26,7 +26,7 @@ async def get_sync_data():
     """Execute a SPARQL query to get current sync status."""
     with tracer.start_as_current_span("get_sync_data") as span:
         try:
-            return QueryResponse(results={"head":{"vars":["currentCardanoHeight","capBlockNum","count"]},"results":{"bindings":[{"currentCardanoHeight":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"},"capBlockNum":{"datatype":"http://www.w3.org/2001/XMLSchema#decimal","type":"literal","value":"10.0"},"count":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"}}]},"meta":{"query-time-ms":3,"result-size-total":1}})
+            return QueryResponse(results={"sparql_query":"","results":{"head":{"vars":["currentCardanoHeight","capBlockNum","count"]},"results":{"bindings":[{"currentCardanoHeight":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"},"capBlockNum":{"datatype":"http://www.w3.org/2001/XMLSchema#decimal","type":"literal","value":"10.0"},"count":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"}}]},"meta":{"query-time-ms":1,"result-size-total":1}}})
 
         except HTTPException as e:
             raise e
