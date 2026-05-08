@@ -41,7 +41,7 @@ RUN --mount=type=cache,target=/root/.cache/pypoetry \
 FROM app_deps AS app_server
 
 COPY src/ src/
-COPY datasets/ datasets/
+#COPY datasets/ datasets/
 
 EXPOSE 8000
 
