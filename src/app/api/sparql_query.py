@@ -26,7 +26,7 @@ async def get_sync_data():
     """Execute a SPARQL query to get current sync status."""
     with tracer.start_as_current_span("get_sync_data") as span:
         try:
-            return QueryResponse(results={"sparql_query":"\n                PREFIX b: <https://mobr.ai/ont/blockchain#>\n                PREFIX c: <https://mobr.ai/ont/cardano#>\n                SELECT ?currentCardanoHeight (MAX(?blockNum) AS ?capBlockNum) (COUNT(?block) AS ?count)\n                WHERE {\n                  c:Cardano c:hasBlockNumber ?currentCardanoHeight .\n                  ?block a b:Block .\n                  ?block c:hasBlockNumber ?blockNum .\n                }\n                GROUP BY (?currentCardanoHeight)\n                LIMIT 1\n            ","results":{"head":{"vars":["currentCardanoHeight","capBlockNum","count"]},"results":{"bindings":[{"currentCardanoHeight":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"},"capBlockNum":{"datatype":"http://www.w3.org/2001/XMLSchema#decimal","type":"literal","value":"10.0"},"count":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"}}]},"meta":{"query-time-ms":3,"result-size-total":1}}})
+            return QueryResponse(results={"head":{"vars":["currentCardanoHeight","capBlockNum","count"]},"results":{"bindings":[{"currentCardanoHeight":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"},"capBlockNum":{"datatype":"http://www.w3.org/2001/XMLSchema#decimal","type":"literal","value":"10.0"},"count":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"}}]},"meta":{"query-time-ms":3,"result-size-total":1}})
 
         except HTTPException as e:
             raise e
