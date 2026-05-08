@@ -1,4 +1,4 @@
-# cap/src/app/database/alembic-migration/migrations/versions/20251221_add_shared_image_table.py
+# sap/src/app/database/alembic-migration/migrations/versions/20251221_add_shared_image_table.py
 """
 add shared_image table (idempotent)
 

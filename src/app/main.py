@@ -48,7 +48,7 @@ DEFAULT_CORS = [
     "http://0.0.0.0:8000",     # Local dev server
     "http://localhost:8000",   # Local dev server
     "http://127.0.0.1:8000",   # Local dev server
-    "https://cap.mobr.ai",     # production
+    "https://sap.mobr.ai",     # production
 ]
 ENV_CORS = os.getenv("CORS_ORIGINS", "")
 ALLOWED_ORIGINS = [o.strip() for o in ENV_CORS.split(",") if o.strip()] or DEFAULT_CORS
@@ -101,8 +101,8 @@ async def initialize_required_graphs(client: TriplestoreClient) -> None:
     """Initialize all required graphs for the application."""
     with tracer.start_as_current_span("initialize_required_graphs") as span:
         required_graphs = [
-            (settings.CARDANO_GRAPH, settings.ONTOLOGY_PATH),
-            (f"{settings.CARDANO_GRAPH}/metadata", ""),
+            (settings.SOLANA_GRAPH, settings.ONTOLOGY_PATH),
+            (f"{settings.SOLANA_GRAPH}/metadata", ""),
         ]
 
         initialization_results = []

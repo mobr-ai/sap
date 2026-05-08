@@ -1,4 +1,4 @@
-# cap/src/app/api/waitlist.py
+# sap/src/app/api/waitlist.py
 
 from __future__ import annotations
 

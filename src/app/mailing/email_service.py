@@ -31,7 +31,7 @@ def _load_translations():
     candidates = [
         HERE / 'translation.json',
         HERE / 'i18n' / 'sap_emails.json',
-        HERE / 'i18n' / 'cap_emails.json',
+        HERE / 'i18n' / 'sap_emails.json',
         Path.cwd() / 'src' / 'sap' / 'mailing' / 'translation.json',
         Path.cwd() / 'translation.json',
     ]

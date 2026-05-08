@@ -159,7 +159,7 @@ async def test_contextualize_answer():
         user_query = "What is the current epoch?"
 
         sparql_query = """
-PREFIX c: <https://mobr.ai/ont/cardano#>
+PREFIX c: <https://mobr.ai/ont/solana#>
 SELECT ?epoch ?epochNo ?startTime
 WHERE {
 ?epoch a c:Epoch ;
@@ -175,7 +175,7 @@ LIMIT 1
             "results": {
                 "bindings": [
                     {
-                        "epoch": {"value": "https://mobr.ai/ont/cardano#epoch/450"},
+                        "epoch": {"value": "https://mobr.ai/ont/solana#epoch/450"},
                         "epochNo": {"value": "450"},
                         "startTime": {"value": "2024-01-15T00:00:00Z"}
                     }
@@ -241,7 +241,7 @@ This query will return the latest 5 blocks."""
         {
             "name": "With explanatory text",
             "input": """The query is:
-PREFIX c: <https://mobr.ai/ont/cardano#>
+PREFIX c: <https://mobr.ai/ont/solana#>
 SELECT ?epoch
 WHERE {
 ?epoch a c:Epoch .
@@ -293,7 +293,7 @@ async def test_full_pipeline():
         print("\n🔧 Step 1: Converting to SPARQL...")
         # To test, using mock SPARQL instead of calling the model
         mock_sparql = """
-PREFIX c: <https://mobr.ai/ont/cardano#>
+PREFIX c: <https://mobr.ai/ont/solana#>
 PREFIX b: <https://mobr.ai/ont/blockchain#>
 SELECT (COUNT(?block) as ?count)
 WHERE {

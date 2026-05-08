@@ -1,4 +1,4 @@
-# cap/src/app/database/session.py
+# sap/src/app/database/session.py
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -8,7 +8,7 @@ from typing import Generator
 from dotenv import load_dotenv
 load_dotenv()  # must be first
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://usernotdefined:pass@localhost/cap")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://usernotdefined:pass@localhost/sap")
 
 engine = create_engine(
     DATABASE_URL,

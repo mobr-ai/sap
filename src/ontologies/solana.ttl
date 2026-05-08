@@ -1,0 +1,394 @@
+@prefix so:    <https://mobr.ai/ont/solana#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix dct:   <http://purl.org/dc/terms/> .
+@prefix prov:  <http://www.w3.org/ns/prov#> .
+
+#################################################################
+# Ontology
+#################################################################
+
+so:SolanaOntology a owl:Ontology ;
+  dct:title "Solana Ledger Ontology" ;
+  dct:description "Ontology for representing native Solana ledger concepts and Jetstreamer-derived aggregate observations without conflating aggregates with native transactions." .
+
+#################################################################
+# Core Classes
+#################################################################
+
+so:LedgerObject a owl:Class .
+
+so:TemporalUnit a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:LedgerEvent a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:Actor a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:Executable a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:StateCarrier a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:Observation a owl:Class ;
+  rdfs:subClassOf so:LedgerObject ;
+  rdfs:comment "A derived observation or aggregate produced by an ingestion source. Observations are not native Solana ledger objects such as transactions or entries." .
+
+so:AggregateObservation a owl:Class ;
+  rdfs:subClassOf so:Observation ;
+  rdfs:comment "An aggregate observation derived from one or more native ledger events." .
+
+#################################################################
+# Native Solana Classes
+#################################################################
+
+so:Epoch a owl:Class ;
+  rdfs:subClassOf so:TemporalUnit .
+
+so:Slot a owl:Class ;
+  rdfs:subClassOf so:TemporalUnit .
+
+so:Block a owl:Class ;
+  rdfs:subClassOf so:LedgerEvent .
+
+so:Entry a owl:Class ;
+  rdfs:subClassOf so:LedgerEvent .
+
+so:Transaction a owl:Class ;
+  rdfs:subClassOf so:LedgerEvent .
+
+so:Instruction a owl:Class ;
+  rdfs:subClassOf so:LedgerEvent .
+
+so:RewardEvent a owl:Class ;
+  rdfs:subClassOf so:LedgerEvent .
+
+so:Validator a owl:Class ;
+  rdfs:subClassOf so:Actor .
+
+so:Authority a owl:Class ;
+  rdfs:subClassOf so:Actor .
+
+so:Program a owl:Class ;
+  rdfs:subClassOf so:Executable .
+
+so:NativeProgram a owl:Class ;
+  rdfs:subClassOf so:Program .
+
+so:UpgradeableProgram a owl:Class ;
+  rdfs:subClassOf so:Program .
+
+so:Account a owl:Class ;
+  rdfs:subClassOf so:StateCarrier .
+
+so:SystemAccount a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:StakeAccount a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:VoteAccount a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:TokenAccount a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:MintAccount a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:AddressLookupTable a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:SysvarAccount a owl:Class ;
+  rdfs:subClassOf so:Account .
+
+so:Signature a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:PublicKey a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+so:RecentBlockhash a owl:Class ;
+  rdfs:subClassOf so:LedgerObject .
+
+#################################################################
+# Jetstreamer-Derived Aggregate Classes
+#################################################################
+
+so:ProgramInvocationAggregate a owl:Class ;
+  rdfs:subClassOf so:AggregateObservation ;
+  rdfs:comment "Aggregate observation for invocations of a Solana program in a slot or block, as emitted from Jetstreamer-derived local data." .
+
+so:SlotInstructionMetrics a owl:Class ;
+  rdfs:subClassOf so:AggregateObservation ;
+  rdfs:comment "Aggregate instruction metrics for a slot, such as aggregate counts or consumed compute units." .
+
+#################################################################
+# Slot / Block Status Vocabulary
+#################################################################
+
+so:SlotStatus a owl:Class .
+
+so:Produced a so:SlotStatus .
+so:Skipped a so:SlotStatus .
+so:UnknownOrDeferred a so:SlotStatus .
+
+#################################################################
+# Reward Vocabulary
+#################################################################
+
+so:RewardType a owl:Class .
+
+so:FeeReward a so:RewardType .
+so:RenterReward a so:RewardType .
+so:StakingReward a so:RewardType .
+so:VotingReward a so:RewardType .
+
+#################################################################
+# Native Object Properties
+#################################################################
+
+so:containsSlot a owl:ObjectProperty ;
+  rdfs:domain so:Epoch ;
+  rdfs:range so:Slot .
+
+so:inEpoch a owl:ObjectProperty ;
+  rdfs:domain so:Slot ;
+  rdfs:range so:Epoch ;
+  owl:inverseOf so:containsSlot .
+
+so:hasBlock a owl:ObjectProperty ;
+  rdfs:domain so:Slot ;
+  rdfs:range so:Block .
+
+so:occupiesSlot a owl:ObjectProperty ;
+  rdfs:domain so:Block ;
+  rdfs:range so:Slot ;
+  owl:inverseOf so:hasBlock .
+
+so:hasLeader a owl:ObjectProperty ;
+  rdfs:domain so:Slot ;
+  rdfs:range so:Validator .
+
+so:producedBy a owl:ObjectProperty ;
+  rdfs:domain so:Block ;
+  rdfs:range so:Validator .
+
+so:containsEntry a owl:ObjectProperty ;
+  rdfs:domain so:Block ;
+  rdfs:range so:Entry .
+
+so:containsTransaction a owl:ObjectProperty ;
+  rdfs:domain so:Block ;
+  rdfs:range so:Transaction .
+
+so:hasInstruction a owl:ObjectProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range so:Instruction .
+
+so:invokesProgram a owl:ObjectProperty ;
+  rdfs:domain so:Instruction ;
+  rdfs:range so:Program .
+
+so:referencesAccount a owl:ObjectProperty ;
+  rdfs:domain so:Instruction ;
+  rdfs:range so:Account .
+
+so:mentionsAddress a owl:ObjectProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range so:PublicKey .
+
+so:hasSigner a owl:ObjectProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range so:Authority .
+
+so:hasSignature a owl:ObjectProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range so:Signature .
+
+so:usesRecentBlockhash a owl:ObjectProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range so:RecentBlockhash .
+
+so:usesLookupTable a owl:ObjectProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range so:AddressLookupTable .
+
+so:rewardsAccount a owl:ObjectProperty ;
+  rdfs:domain so:RewardEvent ;
+  rdfs:range so:Account .
+
+so:rewardsValidator a owl:ObjectProperty ;
+  rdfs:domain so:RewardEvent ;
+  rdfs:range so:Validator .
+
+so:recordedInBlock a owl:ObjectProperty ;
+  rdfs:domain so:RewardEvent ;
+  rdfs:range so:Block .
+
+so:relatesToEpoch a owl:ObjectProperty ;
+  rdfs:domain so:RewardEvent ;
+  rdfs:range so:Epoch .
+
+so:hasRewardType a owl:ObjectProperty ;
+  rdfs:domain so:RewardEvent ;
+  rdfs:range so:RewardType .
+
+#################################################################
+# Aggregate / Observation Object Properties
+#################################################################
+
+so:observedInSlot a owl:ObjectProperty ;
+  rdfs:domain so:Observation ;
+  rdfs:range so:Slot .
+
+so:observedInBlock a owl:ObjectProperty ;
+  rdfs:domain so:Observation ;
+  rdfs:range so:Block .
+
+so:observesProgram a owl:ObjectProperty ;
+  rdfs:domain so:ProgramInvocationAggregate ;
+  rdfs:range so:Program .
+
+so:hasObservedProgram a owl:ObjectProperty ;
+  rdfs:domain so:SlotInstructionMetrics ;
+  rdfs:range so:Program .
+
+#################################################################
+# Native Datatype Properties
+#################################################################
+
+so:epochNumber a owl:DatatypeProperty ;
+  rdfs:domain so:Epoch ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:slotNumber a owl:DatatypeProperty ;
+  rdfs:domain so:Slot ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:blockHeight a owl:DatatypeProperty ;
+  rdfs:domain so:Block ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:entryIndex a owl:DatatypeProperty ;
+  rdfs:domain so:Entry ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:transactionIndex a owl:DatatypeProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:instructionIndex a owl:DatatypeProperty ;
+  rdfs:domain so:Instruction ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:base58Value a owl:DatatypeProperty ;
+  rdfs:range xsd:string .
+
+so:lamports a owl:DatatypeProperty ;
+  rdfs:range xsd:long .
+
+so:computeUnitsConsumed a owl:DatatypeProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:feeLamports a owl:DatatypeProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:success a owl:DatatypeProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range xsd:boolean .
+
+so:isVoteTransaction a owl:DatatypeProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range xsd:boolean .
+
+so:isWritable a owl:DatatypeProperty ;
+  rdfs:domain so:Account ;
+  rdfs:range xsd:boolean .
+
+so:isSigner a owl:DatatypeProperty ;
+  rdfs:domain so:Account ;
+  rdfs:range xsd:boolean .
+
+so:ownerProgramId a owl:DatatypeProperty ;
+  rdfs:domain so:Account ;
+  rdfs:range xsd:string .
+
+so:dataLength a owl:DatatypeProperty ;
+  rdfs:domain so:Account ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:rentEpoch a owl:DatatypeProperty ;
+  rdfs:domain so:Account ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:slotStatus a owl:DatatypeProperty ;
+  rdfs:domain so:Slot ;
+  rdfs:range xsd:string .
+
+so:blockTimeUnix a owl:DatatypeProperty ;
+  rdfs:domain so:Block ;
+  rdfs:range xsd:long .
+
+so:version a owl:DatatypeProperty ;
+  rdfs:domain so:Transaction ;
+  rdfs:range xsd:string .
+
+#################################################################
+# Aggregate / Observation Datatype Properties
+#################################################################
+
+so:observedSlotNumber a owl:DatatypeProperty ;
+  rdfs:domain so:Observation ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:observedProgramId a owl:DatatypeProperty ;
+  rdfs:domain so:Observation ;
+  rdfs:range xsd:string .
+
+so:invocationCount a owl:DatatypeProperty ;
+  rdfs:domain so:ProgramInvocationAggregate ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:transactionCount a owl:DatatypeProperty ;
+  rdfs:domain so:AggregateObservation ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:instructionCount a owl:DatatypeProperty ;
+  rdfs:domain so:SlotInstructionMetrics ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:aggregateComputeUnitsConsumed a owl:DatatypeProperty ;
+  rdfs:domain so:AggregateObservation ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:successfulTransactionCount a owl:DatatypeProperty ;
+  rdfs:domain so:AggregateObservation ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:failedTransactionCount a owl:DatatypeProperty ;
+  rdfs:domain so:AggregateObservation ;
+  rdfs:range xsd:nonNegativeInteger .
+
+so:voteTransactionCount a owl:DatatypeProperty ;
+  rdfs:domain so:AggregateObservation ;
+  rdfs:range xsd:nonNegativeInteger .
+
+#################################################################
+# Provenance Hooks
+#################################################################
+
+so:observedFromSource a owl:ObjectProperty ;
+  rdfs:subPropertyOf prov:wasDerivedFrom ;
+  rdfs:domain so:LedgerObject .
+
+so:decodedAt a owl:DatatypeProperty ;
+  rdfs:subPropertyOf prov:generatedAtTime ;
+  rdfs:range xsd:dateTime .

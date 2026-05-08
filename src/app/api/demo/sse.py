@@ -1,4 +1,4 @@
-# cap/api/demo/sse.py
+# sap/api/demo/sse.py
 import re
 from typing import Iterator
 

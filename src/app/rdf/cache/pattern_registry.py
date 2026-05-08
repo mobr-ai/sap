@@ -103,7 +103,7 @@ class PatternRegistry:
 
     SEMANTIC_SUGAR = [
         'create', 'created', 'plot', 'draw', 'indeed', 'very', 'too', 'so', 'make', 'compose',
-        'visualization', 'cardano', 'count', 'network', 'represent', 'table', 'versus', 'about',
+        'visualization', 'solana', 'count', 'network', 'represent', 'table', 'versus', 'about',
         'against', 'pie', 'pizza', 'recorded', 'storage', 'storaged', "with", "all",
         'history', 'ever', 'over time', 'historical', 'progression', 'evolution',
     ]
@@ -137,7 +137,7 @@ class PatternRegistry:
     SLOT_TERMS = ['slot leader', 'slot leadershop', 'block producer', 'producer', 'block miner', 'miner', 'block creator', 'block generator']
     EPOCH_TERMS = ['epoch']
     NFT_TERMS = ['nft', 'non-fungible token', 'non fungible token']
-    TOKEN_TERMS = ['cnt', 'cardano native token', 'native token', 'fungible token', 'token', 'multi-asset', 'multi asset', 'asset']
+    TOKEN_TERMS = ['cnt', 'solana native token', 'native token', 'fungible token', 'token', 'multi-asset', 'multi asset', 'asset']
     GOVERNANCE_PROPOSAL_TERMS = ['governance', 'proposal', 'action']
     VOTING_TERMS = ['vote', 'voting', 'voting anchor']
     COMMITTEE_TERMS = ['committee']
@@ -206,7 +206,7 @@ class PatternRegistry:
     # Filler words (shared across normalizers)
     FILLER_WORDS = [
         'please', 'can', 'the', 'i', 'be', 'you', 'my',
-        'exist', 'at', 'a', 'an', 'of', 'in', 'on', 'yours', 'to', 'cardano',
+        'exist', 'at', 'a', 'an', 'of', 'in', 'on', 'yours', 'to', 'solana',
         'do', 'ever', 'from', 'there'
     ]
 
@@ -257,18 +257,3 @@ class PatternRegistry:
         """Build entity pattern with optional plural."""
         suffix = 's?' if plural else ''
         return PatternRegistry.build_pattern(base_terms) + suffix
-
-    @staticmethod
-    def is_pool_id(text: str) -> bool:
-        """Check if text matches pool ID pattern."""
-        return bool(re.match(r'["\']?(pool1[a-z0-9]{50,})["\']?', text))
-
-    @staticmethod
-    def is_utxo_ref(text: str) -> bool:
-        """Check if text matches UTXO reference pattern (txhash#index)."""
-        return bool(re.match(r'["\']?([a-f0-9]{64})#(\d+)["\']?', text, re.IGNORECASE))
-
-    @staticmethod
-    def is_cardano_address(text: str) -> bool:
-        """Check if text matches Cardano address pattern."""
-        return bool(re.match(r'["\']?(addr1[a-z0-9]{50,}|stake1[a-z0-9]{50,})["\']?', text, re.IGNORECASE))

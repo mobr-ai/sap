@@ -154,7 +154,7 @@ class SPARQLNormalizer:
     def _extract_currency_uris(self, text: str) -> str:
         """Extract currency URIs."""
         # pattern captures the full URI including any digits
-        pattern = r'<http://www\.mobr\.ai/ontologies/cardano#cnt/[^>]+>'
+        pattern = r'<http://www\.mobr\.ai/ont/solana#cnt/[^>]+>'
         matches = list(re.finditer(pattern, text))
 
         for match in reversed(matches):
@@ -171,7 +171,7 @@ class SPARQLNormalizer:
         return text
 
     def _extract_pool_ids(self, text: str) -> str:
-        """Extract Cardano pool IDs."""
+        """Extract pool IDs."""
         # Match pool IDs both bare and within quotes
         pattern = r'["\']?(pool1[a-z0-9]{50,})["\']?'
         matches = list(re.finditer(pattern, text, re.IGNORECASE))
@@ -196,7 +196,7 @@ class SPARQLNormalizer:
         return text
 
     def _extract_utxo_refs(self, text: str) -> str:
-        """Extract UTXO references (txhash#index)."""
+        """Extract tx references (txhash#index)."""
         utxo_pattern = r'["\']?([a-f0-9]{64})#(\d+)["\']?'
         matches = list(re.finditer(utxo_pattern, text, re.IGNORECASE))
 
@@ -217,7 +217,7 @@ class SPARQLNormalizer:
         return text
 
     def _extract_addresses(self, text: str) -> str:
-        """Extract Cardano addresses."""
+        """Extract addresses."""
         address_pattern = r'["\']?(addr1[a-z0-9]{50,}|stake1[a-z0-9]{50,})["\']?'
         matches = list(re.finditer(address_pattern, text, re.IGNORECASE))
 

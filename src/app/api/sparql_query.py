@@ -28,7 +28,7 @@ async def get_sync_data():
         try:
             sync_query = """
                 PREFIX b: <https://mobr.ai/ont/blockchain#>
-                PREFIX c: <https://mobr.ai/ont/cardano#>
+                PREFIX c: <https://mobr.ai/ont/solana#>
                 SELECT ?currentCardanoHeight (MAX(?blockNum) AS ?capBlockNum) (COUNT(?block) AS ?count)
                 WHERE {
                   c:Cardano c:hasBlockNumber ?currentCardanoHeight .

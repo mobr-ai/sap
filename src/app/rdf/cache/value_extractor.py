@@ -67,13 +67,13 @@ class ValueExtractor:
         # Extract currency/token URIs (add this new section)
         # Look for ADA references
         if re.search(r'\bADA\b', nl_query, re.IGNORECASE):
-            if "https://mobr.ai/ont/cardano#cnt/ada" not in values["currencies"]:
-                values["currencies"].append("https://mobr.ai/ont/cardano#cnt/ada")
+            if "https://mobr.ai/ont/solana#cnt/ada" not in values["currencies"]:
+                values["currencies"].append("https://mobr.ai/ont/solana#cnt/ada")
 
         # Extract token names that might be currencies
         for token in values["tokens"]:
             # Construct potential currency URI
-            currency_uri = f"https://mobr.ai/ont/cardano#cnt/{token.lower()}"
+            currency_uri = f"https://mobr.ai/ont/solana#cnt/{token.lower()}"
             if currency_uri not in values["currencies"]:
                 values["currencies"].append(currency_uri)
 

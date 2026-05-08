@@ -86,7 +86,7 @@ class QueryNormalizer:
 
             # System and Status
             PatternRegistry.build_entity_pattern(PatternRegistry.STATUS_TERMS): 'ENTITY_STATUS',
-            r'\b((what is happening|what up (cardano)s?)s?)s?\b': 'ENTITY_STATUS',
+            r'\b((what is happening|what up (solana)s?)s?)s?\b': 'ENTITY_STATUS',
 
             PatternRegistry.build_entity_pattern(PatternRegistry.REWARD_TERMS): 'ENTITY_REWARD_WITHDRAWAL',
 

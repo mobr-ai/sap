@@ -1,4 +1,4 @@
-# cap/api/demo/scenes/misc.py
+# sap/api/demo/scenes/misc.py
 MISC_SCENES = {
     "latest_5_blocks": {
         "match": "list the latest 5 blocks",

@@ -12,7 +12,7 @@ from app.util.str_util import is_hex_string, hex_to_string
 
 logger = logging.getLogger(__name__)
 
-ADA_CURRENCY_URI = "https://mobr.ai/ont/cardano#cnt/ada"
+ADA_CURRENCY_URI = "https://mobr.ai/ont/solana#cnt/ada"
 LOVELACE_TO_ADA = 1_000_000
 
 
@@ -280,11 +280,9 @@ def _flatten_binding(binding: dict[str, Any], ada_variables: set[str] = None,
         return result
 
     # Check once if this binding has "Cardano ADA" as tokenName
-    has_cardano_ada_token = False
     if 'tokenName' in binding:
         token_name_obj = binding['tokenName']
         token_name_value = token_name_obj.get('value', '') if isinstance(token_name_obj, dict) else str(token_name_obj)
-        has_cardano_ada_token = token_name_value.strip().lower() == 'cardano ada'
 
     for var_name, value_obj in binding.items():
         if not isinstance(value_obj, dict):

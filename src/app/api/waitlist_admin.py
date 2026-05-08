@@ -1,4 +1,4 @@
-# cap/src/app/api/waitlist_admin.py
+# sap/src/app/api/waitlist_admin.py
 
 from __future__ import annotations
 
@@ -121,7 +121,7 @@ def _email_to_username_base(email: str) -> str:
 
 def _ensure_username(db: Session, user: User) -> bool:
     current = (getattr(user, "username", None) or "").strip().lower()
-    if current and not current.startswith("cap user"):
+    if current and not current.startswith("sap user"):
         return False
 
     base = _email_to_username_base(getattr(user, "email", "") or "")
