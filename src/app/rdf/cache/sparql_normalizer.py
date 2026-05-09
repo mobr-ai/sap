@@ -244,7 +244,6 @@ class SPARQLNormalizer:
             (r'BIND\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*1\s*,\s*4\s*\)\s+AS\s+\?timePeriod\s*\)', 'YEAR'),
             (r'BIND\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*1\s*,\s*10\s*\)\s+AS\s+\?timePeriod\s*\)', 'DAY'),
             (r'BIND\s*\(\s*CONCAT\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*1\s*,\s*7\s*\)\s*,\s*"-W"\s*,\s*STR\s*\(\s*FLOOR\s*\(\s*\(\s*xsd:integer\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*9\s*,\s*2\s*\)\s*\)\s*-\s*1\s*\)\s*/\s*7\s*\)\s*\+\s*1\s*\)\s*\)\s*\)\s+AS\s+\?timePeriod\s*\)', 'WEEK'),
-            (r'\?epoch\s+c:hasEpochNumber\s+\?timePeriod', 'EPOCH'),
             (r'GROUP\s+BY\s+\?timePeriod', 'GROUPED_PERIOD'),
         ]
         for pattern, period_type in temporal_patterns:
@@ -415,8 +414,8 @@ class SPARQLNormalizer:
         return text
 
     def _extract_uris(self, text: str) -> str:
-        """Extract Cardano URIs."""
-        pattern = r'(c:(?:addr|asset|stake|pool|tx)[a-zA-Z0-9]+)'
+        """Extract Solana URIs."""
+        pattern = r'(so:(?:addr|asset|stake|pool|tx)[a-zA-Z0-9]+)'
         matches = list(re.finditer(pattern, text))
 
         for match in reversed(matches):

@@ -11,10 +11,9 @@ logger = logging.getLogger(__name__)
 
 TEST_GRAPH = "https://mobr.ai/ont/solana/test"
 TEST_DATA = """
-PREFIX c: <https://mobr.ai/ont/solana#>
+PREFIX so: <https://mobr.ai/ont/solana#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-c:TestBlock rdf:type c:Block .
-c:TestBlock c:status c:Pending .
+so:TestBlock rdf:type so:Block .
 """
 
 @pytest.fixture(autouse=True)
