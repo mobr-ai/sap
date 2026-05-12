@@ -1,4 +1,4 @@
-# cap/api/demo/scenes/__init__.py
+# sap/api/demo/scenes/__init__.py
 from __future__ import annotations
 
 from typing import Optional, Dict, Any

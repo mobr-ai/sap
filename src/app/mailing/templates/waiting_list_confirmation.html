@@ -1,4 +1,4 @@
-{# src/cap/mailing/templates/waiting_list_confirmation.html #} {% extends
+{# src/sap/mailing/templates/waiting_list_confirmation.html #} {% extends
 "base_email.html" %} {% block content %} {# Build referral link reliably from
 available context #} {% set _base = (public_base_url or app_url or "") %} {% set
 _ref = (ref or waitlist_ref or "") %} {% set _ref = (_ref|string).strip() %} {%

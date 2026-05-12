@@ -20,7 +20,7 @@ RUN apt-get update \
 RUN pip install --no-cache-dir poetry==2.2.1
 
 # ------------------------------------------------------------
-# 1) cap_deps: installs all python deps (main + rag)
+# 1) sap_deps: installs all python deps (main + rag)
 # ------------------------------------------------------------
 FROM base AS app_deps
 
@@ -36,12 +36,12 @@ RUN --mount=type=cache,target=/root/.cache/pypoetry \
  && poetry install --with rag --without dev --no-root --no-interaction --no-ansi
 
 # ------------------------------------------------------------
-# 2) cap_server: reuses deps layer, only copies code
+# 2) sap_server: reuses deps layer, only copies code
 # ------------------------------------------------------------
 FROM app_deps AS app_server
 
 COPY src/ src/
-COPY datasets/ datasets/
+#COPY datasets/ datasets/
 
 EXPOSE 8000
 

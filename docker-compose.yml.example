@@ -2,9 +2,9 @@ services:
   api:
     build: .
     platform: linux/amd64
-    container_name: cap_server
+    container_name: sap_server
     volumes:
-      - /home/cap/data/share-images:/var/lib/cap/share-images
+      - /home/sap/data/share-images:/var/lib/sap/share-images
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports:
@@ -12,7 +12,7 @@ services:
     env_file:
       - .env
     command: >
-      sh -c "sleep 15 && uvicorn src.cap.main:app --host 0.0.0.0 --port 8000"
+      sh -c "sleep 15 && uvicorn src.sap.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       jaeger:
         condition: service_started
@@ -25,14 +25,14 @@ services:
 
   postgres:
     image: postgres:16
-    container_name: cap_postgres
+    container_name: sap_postgres
     ports:
       - "5433:5432"   # host access (avoid clashing with any local 5432)
     env_file:
       - .env
     volumes:
-      - /home/cap/data/postgres:/var/lib/postgresql/data
-      - ./ops/sql/init-cap.sql:/docker-entrypoint-initdb.d/10-init-cap.sql:ro
+      - /home/sap/data/postgres:/var/lib/postgresql/data
+      - ./ops/sql/init-sap.sql:/docker-entrypoint-initdb.d/10-init-sap.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-postgres} -h localhost"]
       interval: 5s
@@ -43,11 +43,11 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: cap_redis
+    container_name: sap_redis
     ports:
       - "6379:6379"
     volumes:
-      - /home/cap/data/redis:/data
+      - /home/sap/data/redis:/data
     command: redis-server --appendonly yes
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
@@ -68,10 +68,10 @@ services:
       - .env
     user: "1000:1000"
     volumes:
-      - /home/cap/data/qlever:/data
+      - /home/sap/data/qlever:/data
     working_dir: /data
     entrypoint: ["/bin/bash"]
-    command: ["-c", "ServerMain -i cardano -p 7000 -a ${VIRTUOSO_PASSWORD} --persist-updates --memory-max-size 16g"]
+    command: ["-c", "ServerMain -i solana -p 7000 -a ${VIRTUOSO_PASSWORD} --persist-updates --memory-max-size 16g"]
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:7000/ >/dev/null || exit 1"]
       interval: 10s
@@ -105,7 +105,7 @@ services:
       - "8001:8000"
 
     volumes:
-      - /home/cap/data/huggingface:/root/.cache/huggingface
+      - /home/sap/data/huggingface:/root/.cache/huggingface
 
     environment:
       - NVIDIA_VISIBLE_DEVICES=all

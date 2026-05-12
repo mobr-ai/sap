@@ -1,4 +1,4 @@
-# cap/core/auth_dependencies.py
+# sap/core/auth_dependencies.py
 from typing import Optional, Callable, Dict, Any
 from fastapi import Depends, HTTPException, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials

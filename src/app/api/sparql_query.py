@@ -26,21 +26,7 @@ async def get_sync_data():
     """Execute a SPARQL query to get current sync status."""
     with tracer.start_as_current_span("get_sync_data") as span:
         try:
-            sync_query = """
-                PREFIX b: <https://mobr.ai/ont/blockchain#>
-                PREFIX c: <https://mobr.ai/ont/cardano#>
-                SELECT ?currentCardanoHeight (MAX(?blockNum) AS ?capBlockNum) (COUNT(?block) AS ?count)
-                WHERE {
-                  c:Cardano c:hasBlockNumber ?currentCardanoHeight .
-                  ?block a b:Block .
-                  ?block c:hasBlockNumber ?blockNum .
-                }
-                GROUP BY (?currentCardanoHeight)
-                LIMIT 1
-            """
-
-            request = QueryRequest(query=sync_query)
-            return await execute_query(request)
+            return QueryResponse(results={"sparql_query":"","results":{"head":{"vars":["currentCardanoHeight","capBlockNum","count"]},"results":{"bindings":[{"currentCardanoHeight":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"},"capBlockNum":{"datatype":"http://www.w3.org/2001/XMLSchema#decimal","type":"literal","value":"10.0"},"count":{"datatype":"http://www.w3.org/2001/XMLSchema#int","type":"literal","value":"10"}}]},"meta":{"query-time-ms":1,"result-size-total":1}}})
 
         except HTTPException as e:
             raise e

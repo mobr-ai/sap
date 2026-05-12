@@ -1,5 +1,5 @@
-# cap/database/model.py
-# cap/database/model.py
+# sap/database/model.py
+# sap/database/model.py
 import uuid
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import (

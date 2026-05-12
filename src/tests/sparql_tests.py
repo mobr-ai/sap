@@ -142,7 +142,7 @@ if __name__ == "__main__":
     ╚══════════════════════════════════════════╝
 
     Make sure the following are running:
-    1. CAP service (python -m cap.main)
+    1. CAP service (python -m sap.main)
     2. Virtuoso triplestore
 
     Press Ctrl+C to cancel

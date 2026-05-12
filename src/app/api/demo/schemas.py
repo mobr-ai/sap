@@ -1,4 +1,4 @@
-# cap/api/demo/schemas.py
+# sap/api/demo/schemas.py
 from typing import Optional, Literal
 from pydantic import BaseModel, Field
 

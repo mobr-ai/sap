@@ -187,9 +187,6 @@ Adjust values to match your local machine and desired runtime.
 Typical variables may include:
 
 ```env
-POSTGRES_DB=sap
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=mysecretpassword
 REDIS_URL=redis://redis:6379/0
 QLEVER_PASSWORD=mysecretpassword
 CUDA_VISIBLE_DEVICES=0
@@ -250,8 +247,6 @@ Recommended adjustments include:
 * `container_name: sap_postgres`
 * `container_name: sap_redis`
 * host paths such as `/home/sap/data/...`
-* database bootstrap file such as `./ops/sql/init-sap.sql`
-* `POSTGRES_DB=sap`
 * application command:
 
   ```bash

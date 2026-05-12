@@ -3,7 +3,7 @@ import os
 import os
 import sys
 
-# Ensure 'src' is on sys.path so "import cap" works when running from this folder
+# Ensure 'src' is on sys.path so "import sap" works when running from this folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 from app.database.model import Base
 target_metadata = Base.metadata

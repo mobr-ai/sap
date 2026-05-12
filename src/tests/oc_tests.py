@@ -159,12 +159,12 @@ async def test_contextualize_answer():
         user_query = "What is the current epoch?"
 
         sparql_query = """
-PREFIX c: <https://mobr.ai/ont/cardano#>
+PREFIX so: <https://mobr.ai/ont/solana#>
 SELECT ?epoch ?epochNo ?startTime
 WHERE {
-?epoch a c:Epoch ;
-        c:hasEpochNumber ?epochNo ;
-        c:hasStartTime ?startTime .
+?epoch a so:Epoch ;
+        so:hasEpochNumber ?epochNo ;
+        so:hasStartTime ?startTime .
 }
 ORDER BY DESC(?epochNo)
 LIMIT 1
@@ -175,7 +175,7 @@ LIMIT 1
             "results": {
                 "bindings": [
                     {
-                        "epoch": {"value": "https://mobr.ai/ont/cardano#epoch/450"},
+                        "epoch": {"value": "https://mobr.ai/ont/solana#epoch/450"},
                         "epochNo": {"value": "450"},
                         "startTime": {"value": "2024-01-15T00:00:00Z"}
                     }
@@ -211,70 +211,6 @@ Be conversational and clear. Format dates nicely."""
     finally:
         await client._close()
 
-async def test_clean_sparql():
-    """Test 6: Clean SPARQL - Demonstrate SPARQL cleaning logic."""
-    print("\n" + "="*70)
-    print("TEST 6: SPARQL Cleaning")
-    print("="*70)
-    print("Purpose: Show how raw LLM output is cleaned to extract pure SPARQL\n")
-
-    client = LLMClient()
-
-    # Example messy SPARQL responses from LLM
-    test_cases = [
-        {
-            "name": "With markdown and explanation",
-            "input": """Here is the SPARQL query:
-
-```sparql
-PREFIX b: <https://mobr.ai/ont/blockchain#>
-SELECT ?block ?hash
-WHERE {
-?block a b:Block ;
-        b:hasHash ?hash .
-}
-LIMIT 5
-```
-
-This query will return the latest 5 blocks."""
-        },
-        {
-            "name": "With explanatory text",
-            "input": """The query is:
-PREFIX c: <https://mobr.ai/ont/cardano#>
-SELECT ?epoch
-WHERE {
-?epoch a c:Epoch .
-}
-
-This will get all epochs."""
-        },
-        {
-            "name": "Clean query (no cleaning needed)",
-            "input": """PREFIX b: <https://mobr.ai/ont/blockchain#>
-SELECT ?tx ?hash
-WHERE {
-?tx a b:Transaction ;
-    b:hasHash ?hash .
-}
-LIMIT 10"""
-        }
-    ]
-
-    for i, test_case in enumerate(test_cases, 1):
-        print(f"\nTest Case {i}: {test_case['name']}")
-        print("-" * 70)
-        print("INPUT:")
-        print(test_case['input'])
-        print("\nOUTPUT (cleaned):")
-        cleaned = _clean_sparql(test_case['input'])
-        print(cleaned)
-        print("-" * 70)
-
-    print("\nSPARQL cleaning demonstration completed")
-
-    await client._close()
-
 async def test_full_pipeline():
     """Test 7: Full Pipeline - End-to-end example."""
     print("\n" + "="*70)
@@ -293,16 +229,11 @@ async def test_full_pipeline():
         print("\n🔧 Step 1: Converting to SPARQL...")
         # To test, using mock SPARQL instead of calling the model
         mock_sparql = """
-PREFIX c: <https://mobr.ai/ont/cardano#>
-PREFIX b: <https://mobr.ai/ont/blockchain#>
+PREFIX so: <https://mobr.ai/ont/solana#>
 SELECT (COUNT(?block) as ?count)
 WHERE {
-?block a b:Block ;
-        c:hasEpoch ?epoch .
-?epoch c:hasEpochNumber ?epochNo .
+?block a so:Block .
 }
-GROUP BY ?epochNo
-ORDER BY DESC(?epochNo)
 LIMIT 1
 """
         print(f"   Generated SPARQL:\n{mock_sparql}")
@@ -367,7 +298,6 @@ async def run_all_tests():
     await safe_run(test_generate_stream)
     await safe_run(test_nl_to_sparql)
     await safe_run(test_contextualize_answer)
-    await safe_run(test_clean_sparql)
     await safe_run(test_full_pipeline)
 
     print("\n" + "="*70)

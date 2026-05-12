@@ -7,7 +7,6 @@ from typing import Any, Tuple, List, Optional
 from opentelemetry import trace
 from collections import Counter
 
-from app.util.cardano_scan import convert_entity_to_cardanoscan_link
 from app.util.epoch_util import epoch_to_date
 
 logger = logging.getLogger(__name__)
@@ -1148,9 +1147,6 @@ class VegaUtil:
                         value = value[:-2]
 
                 # Convert URLs to clickable links
-                # Convert blockchain entities to Cardanoscan links
-                value = convert_entity_to_cardanoscan_link(col_name, value, sparql_query)
-
                 # Convert ipfs (if not already converted)
                 if not str(value).startswith('<a href='):
                     value = VegaUtil._convert_url_to_link(value)

@@ -9,20 +9,13 @@ class Settings(BaseSettings):
     TRIPLESTORE_PASSWORD: str
     TRIPLESTORE_TIMEOUT: str
     TRIPLESTORE_ENDPOINT: str
-    CARDANO_GRAPH: str
+    SOLANA_GRAPH: str
     ONTOLOGY_PATH: str
 
     # LLM settings
     LLM_ONTOLOGY_PATH: str
     MODEL_CONTEXT_CAP: int
     CHAR_PER_TOKEN: int
-
-    # PostgreSQL settings for cardano-db-sync
-    POSTGRES_HOST: str
-    POSTGRES_PORT: int
-    POSTGRES_DB: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
 
     # Monitoring settings
     ENABLE_TRACING: bool

@@ -140,7 +140,7 @@ class PlaceholderRestorer:
 
         # Final fallback: use ADA as default currency
         logger.warning(f"No currency available for {placeholder}, using default ADA")
-        return "<https://mobr.ai/ont/cardano#cnt/ada>"
+        return "<https://mobr.ai/ont/solana#cnt/ada>"
 
     @staticmethod
     def _restore_pool_id(
@@ -288,13 +288,6 @@ class PlaceholderRestorer:
                 quote_char = "'"
             elif cached_value.startswith('"'):
                 quote_char = '"'
-
-        # Check if cached value is actually a pool ID
-        if cached_value and PatternRegistry.is_pool_id(cached_value.strip('"').strip("'")):
-            pool_ids = current_values.get("pool_ids", [])
-            if pool_ids:
-                return f'"{pool_ids[0]}"'
-            return cached_value
 
         tokens = current_values.get("tokens")
         if tokens:

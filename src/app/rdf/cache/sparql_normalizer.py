@@ -154,7 +154,7 @@ class SPARQLNormalizer:
     def _extract_currency_uris(self, text: str) -> str:
         """Extract currency URIs."""
         # pattern captures the full URI including any digits
-        pattern = r'<http://www\.mobr\.ai/ontologies/cardano#cnt/[^>]+>'
+        pattern = r'<http://www\.mobr\.ai/ont/solana#cnt/[^>]+>'
         matches = list(re.finditer(pattern, text))
 
         for match in reversed(matches):
@@ -171,7 +171,7 @@ class SPARQLNormalizer:
         return text
 
     def _extract_pool_ids(self, text: str) -> str:
-        """Extract Cardano pool IDs."""
+        """Extract pool IDs."""
         # Match pool IDs both bare and within quotes
         pattern = r'["\']?(pool1[a-z0-9]{50,})["\']?'
         matches = list(re.finditer(pattern, text, re.IGNORECASE))
@@ -196,7 +196,7 @@ class SPARQLNormalizer:
         return text
 
     def _extract_utxo_refs(self, text: str) -> str:
-        """Extract UTXO references (txhash#index)."""
+        """Extract tx references (txhash#index)."""
         utxo_pattern = r'["\']?([a-f0-9]{64})#(\d+)["\']?'
         matches = list(re.finditer(utxo_pattern, text, re.IGNORECASE))
 
@@ -217,7 +217,7 @@ class SPARQLNormalizer:
         return text
 
     def _extract_addresses(self, text: str) -> str:
-        """Extract Cardano addresses."""
+        """Extract addresses."""
         address_pattern = r'["\']?(addr1[a-z0-9]{50,}|stake1[a-z0-9]{50,})["\']?'
         matches = list(re.finditer(address_pattern, text, re.IGNORECASE))
 
@@ -244,7 +244,6 @@ class SPARQLNormalizer:
             (r'BIND\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*1\s*,\s*4\s*\)\s+AS\s+\?timePeriod\s*\)', 'YEAR'),
             (r'BIND\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*1\s*,\s*10\s*\)\s+AS\s+\?timePeriod\s*\)', 'DAY'),
             (r'BIND\s*\(\s*CONCAT\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*1\s*,\s*7\s*\)\s*,\s*"-W"\s*,\s*STR\s*\(\s*FLOOR\s*\(\s*\(\s*xsd:integer\s*\(\s*SUBSTR\s*\(\s*STR\s*\(\s*\?timestamp\s*\)\s*,\s*9\s*,\s*2\s*\)\s*\)\s*-\s*1\s*\)\s*/\s*7\s*\)\s*\+\s*1\s*\)\s*\)\s*\)\s+AS\s+\?timePeriod\s*\)', 'WEEK'),
-            (r'\?epoch\s+c:hasEpochNumber\s+\?timePeriod', 'EPOCH'),
             (r'GROUP\s+BY\s+\?timePeriod', 'GROUPED_PERIOD'),
         ]
         for pattern, period_type in temporal_patterns:
@@ -415,8 +414,8 @@ class SPARQLNormalizer:
         return text
 
     def _extract_uris(self, text: str) -> str:
-        """Extract Cardano URIs."""
-        pattern = r'(c:(?:addr|asset|stake|pool|tx)[a-zA-Z0-9]+)'
+        """Extract Solana URIs."""
+        pattern = r'(so:(?:addr|asset|stake|pool|tx)[a-zA-Z0-9]+)'
         matches = list(re.finditer(pattern, text))
 
         for match in reversed(matches):

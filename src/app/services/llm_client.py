@@ -14,7 +14,6 @@ from app.config import settings
 from app.util.tag_filter import TagFilter
 from app.util.str_util import get_file_content
 from app.util.vega_util import VegaUtil
-from app.util.cardano_scan import convert_sparql_results_to_links
 from app.util.sparql_util import detect_and_parse_sparql
 from app.services.msg_formatter import MessageFormatter
 from app.services.similarity_service import SimilarityService, SearchStrategy
@@ -495,7 +494,6 @@ User Question: {natural_query}
                     span.set_attribute("format", "string")
                 # Otherwise, serialize dict to JSON
                 elif sparql_results:
-                    sparql_results = convert_sparql_results_to_links(sparql_results, sparql_query)
                     context_res = json.dumps(sparql_results, indent=2)
                     span.set_attribute("format", "dict")
                 else:

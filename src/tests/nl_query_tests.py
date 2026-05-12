@@ -248,7 +248,7 @@ if __name__ == "__main__":
     - Streaming response delivery
 
     Make sure the following are running:
-    1. CAP service (python -m cap.main)
+    1. CAP service (python -m sap.main)
     2. llm service
     3. Virtuoso triplestore
 

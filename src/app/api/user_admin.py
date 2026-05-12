@@ -1,4 +1,4 @@
-# cap/src/app/api/user_admin.py
+# sap/src/app/api/user_admin.py
 import logging
 import secrets
 import re
@@ -44,7 +44,7 @@ def _looks_like_placeholder_username(u: User) -> bool:
     if not uname:
         return True
     # Your observed pattern: "CAP User39"
-    if uname.startswith("cap user"):
+    if uname.startswith("sap user"):
         return True
     return False
 
@@ -272,7 +272,7 @@ def set_user_confirmed_flag(
         email_local = user.email.split("@")[0]
 
         # Normalize if missing or placeholder
-        if not user.username or user.username.lower().startswith("cap user"):
+        if not user.username or user.username.lower().startswith("sap user"):
             user.username = generate_unique_username(
                 db,
                 User,

@@ -137,7 +137,7 @@ class MetricsService:
         """Record knowledge graph load metrics."""
 
         # Check ontology alignment
-        ontology_aligned = bool(re.search(r'\b(c:|b:)\w+', turtle_data))
+        ontology_aligned = bool(re.search(r'\b(so:)\w+', turtle_data))
 
         # Check for off-chain metadata
         has_offchain = bool(re.search(
