@@ -221,8 +221,8 @@ with engine.begin() as conn:
     )
 
 # Paths
-CAP_DIR = os.path.dirname(__file__)
-FRONTEND_DIST = os.getenv("FRONTEND_DIST", os.path.join(CAP_DIR, "static"))
+SAP_DIR = os.path.dirname(__file__)
+FRONTEND_DIST = os.getenv("FRONTEND_DIST", os.path.join(SAP_DIR, "static"))
 INDEX_HTML = os.path.join(FRONTEND_DIST, "index.html")
 
 # 1) Serve built assets (safe: only mount if present)
@@ -231,7 +231,7 @@ if os.path.isdir(assets_dir):
     app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
 
 # Share page static ("shared_pages")
-SHARED_PAGES_DIR = os.path.join(CAP_DIR, "shared_pages")
+SHARED_PAGES_DIR = os.path.join(SAP_DIR, "shared_pages")
 if os.path.isdir(SHARED_PAGES_DIR):
     app.mount(
         "/share-static",
@@ -251,7 +251,7 @@ async def favicon():
 @app.get("/llm", include_in_schema=False)
 async def llm_interface():
     """Serve the LLM natural language query interface."""
-    llm_page = os.path.join(CAP_DIR, "templates", "llm.html")
+    llm_page = os.path.join(SAP_DIR, "templates", "llm.html")
     if os.path.isfile(llm_page):
         return FileResponse(llm_page)
     raise HTTPException(status_code=404, detail="LLM interface not found")

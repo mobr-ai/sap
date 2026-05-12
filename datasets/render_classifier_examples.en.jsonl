@@ -1,0 +1,24 @@
+{"text": "give me a nice table for the main Solana runtime concepts", "family": "table", "chart_subtype": null, "canonical_intent": "definitions_table"}
+{"text": "give me a table for the main Solana validator and execution concept definitions", "family": "table", "chart_subtype": null, "canonical_intent": "definitions_table"}
+{"text": "show a table with the top 10 programs by compute unit consumption", "family": "table", "chart_subtype": null, "canonical_intent": "ranking_table"}
+{"text": "list the latest 5 slots", "family": "table", "chart_subtype": null, "canonical_intent": "latest_records_table"}
+{"text": "show me the latest 5 executed instructions", "family": "table", "chart_subtype": null, "canonical_intent": "latest_records_table"}
+{"text": "plot a line chart showing daily compute unit consumption", "family": "chart", "chart_subtype": "line", "canonical_intent": "time_series_line"}
+{"text": "plot a line chart showing number of active validators per day", "family": "chart", "chart_subtype": "line", "canonical_intent": "time_series_line"}
+{"text": "trace a line chart showing failed instruction executions daily over the last month", "family": "chart", "chart_subtype": "line", "canonical_intent": "time_series_line"}
+{"text": "plot a bar chart showing top programs by invocation count", "family": "chart", "chart_subtype": "bar", "canonical_intent": "categorical_bar"}
+{"text": "plot a bar chart showing number of executed instructions per day over the last month", "family": "chart", "chart_subtype": "bar", "canonical_intent": "time_bucket_bar"}
+{"text": "compare the top validators using a bubble chart: y = compute units processed, x = blocks produced, bubble size = average compute units per block", "family": "chart", "chart_subtype": "bubble", "canonical_intent": "bubble_comparison"}
+{"text": "scatter chart showing compute units vs execution success for a random sample of instructions from the last 24 hours", "family": "chart", "chart_subtype": "scatter", "canonical_intent": "scatter_relationship"}
+{"text": "plot a pie chart showing how much the top 1% most compute-intensive programs represent from the total compute usage on the Solana network", "family": "chart", "chart_subtype": "pie", "canonical_intent": "part_to_whole_pie"}
+{"text": "show where compute usage concentrates by plotting a heatmap of average compute units by day and hour over the current epoch", "family": "chart", "chart_subtype": "heatmap", "canonical_intent": "density_heatmap"}
+{"text": "treemap breaking down compute unit consumption by program ID in the current epoch", "family": "chart", "chart_subtype": "treemap", "canonical_intent": "hierarchy_treemap"}
+{"text": "validator activity trends", "family": "chart", "chart_subtype": "line", "canonical_intent": "generic_trend_chart"}
+{"text": "current Solana runtime trends", "family": "chart", "chart_subtype": "line", "canonical_intent": "generic_trend_chart"}
+{"text": "monthly instruction execution trends", "family": "chart", "chart_subtype": "line", "canonical_intent": "generic_trend_chart"}
+{"text": "program invocation trends", "family": "chart", "chart_subtype": "line", "canonical_intent": "generic_trend_chart"}
+{"text": "TPS trends", "family": "chart", "chart_subtype": "line", "canonical_intent": "generic_trend_chart"}
+{"text": "show me recent TPS", "family": "text", "chart_subtype": null, "canonical_intent": "text_or_default_summary"}
+{"text": "what is the total compute unit consumption today?", "family": "text", "chart_subtype": null, "canonical_intent": "scalar_answer"}
+{"text": "what is your sync status?", "family": "text", "chart_subtype": null, "canonical_intent": "status_answer"}
+{"text": "how many executed instructions today?", "family": "text", "chart_subtype": null, "canonical_intent": "scalar_answer"}
